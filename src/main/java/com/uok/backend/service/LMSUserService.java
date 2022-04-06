@@ -25,4 +25,5 @@ public class LMSUserService implements UserService {
     public void addNewUser(User userData) {
         userRepository.save(userData);
     }
+    //
 }

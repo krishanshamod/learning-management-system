@@ -3,12 +3,16 @@ package com.uok.backend.domain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.Set;
 
 @Entity
 public class User {
 
     @Id
+    ////
     @Column(name = "email", nullable = false, updatable = false, columnDefinition = "TEXT")
+    ////
     private String email;
     @Column(name = "first_name", nullable = false, columnDefinition = "TEXT")
     private String firstName;
@@ -16,7 +20,19 @@ public class User {
     private String lastName;
     @Column(name = "role", nullable = false, columnDefinition = "TEXT")
     private String role;
+    @OneToMany(mappedBy = "course")
+    Set<CourseRegistration> registrations;
 
+    public User() {
+
+    }
+
+    public User(String email, String firstName, String lastName, String role) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+    }
 
     public String getEmail() {
         return email;
