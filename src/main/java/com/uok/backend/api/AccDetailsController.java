@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping(path = "user")
 public class AccDetailsController {
     private UserService userService;
 
@@ -14,8 +15,12 @@ public class AccDetailsController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/{email}")
-    public User getUser(@PathVariable String email) {
-        return userService.getUser(email);
+    //should implement jwt
+    @GetMapping("{email}")
+    public User getUserByToken(@PathVariable String email) {
+        return userService.getUserByEmail(email);
     }
+
+    //forTesting
+//    @PostMapping()
 }
