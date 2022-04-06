@@ -17,8 +17,13 @@ public class User {
     @Column(name = "role", nullable = false, columnDefinition = "TEXT")
     private String role;
 
+
     public String getEmail() {
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getFirstName() {
