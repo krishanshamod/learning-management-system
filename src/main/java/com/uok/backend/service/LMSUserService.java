@@ -6,10 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class LMSUserService implements UserService {
+
+    private final UserRepository userRepository;
 
     @Autowired
-    UserRepository userRepository;
+    public LMSUserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public User getUserByEmail(String email) {
