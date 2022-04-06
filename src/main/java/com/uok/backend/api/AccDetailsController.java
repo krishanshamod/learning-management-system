@@ -21,6 +21,10 @@ public class AccDetailsController {
         return userService.getUserByEmail(email);
     }
 
-    //forTesting
-//    @PostMapping()
+    //forTesting purposes
+    @PostMapping()
+    public void registerNewUser(@RequestBody User userData) {
+        userService.addNewUser(userData);
+    }
+
 }
