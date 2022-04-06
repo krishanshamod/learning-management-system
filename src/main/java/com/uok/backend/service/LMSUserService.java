@@ -19,4 +19,10 @@ public class LMSUserService implements UserService {
     public User getUserByEmail(String email) {
         return userRepository.findById(email).get();
     }
+
+    //forTesting purposes
+    @Override
+    public void addNewUser(User userData) {
+        userRepository.save(userData);
+    }
 }
