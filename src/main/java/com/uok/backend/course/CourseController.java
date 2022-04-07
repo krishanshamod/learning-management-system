@@ -14,6 +14,8 @@ public class CourseController {
         this.courseService = courseService;
     }
 
+    // This method should be changed. before registering the users table should be checked
+    // and the user should be enrolled
     @PostMapping()
     public void registerNewCourse(@RequestBody Course courseData) {
         courseService.addNewCourse(courseData);

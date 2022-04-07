@@ -12,7 +12,7 @@ public class Course {
     @Column(name = "name", nullable = false, columnDefinition = "TEXT")
     private String name;
     @OneToMany(mappedBy = "user")
-    Set<CourseRegistration> registrations;
+    private Set<CourseRegistration> registrations;
 
     public Course() {
     }
@@ -36,6 +36,14 @@ public class Course {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<CourseRegistration> getRegistrations() {
+        return registrations;
+    }
+
+    public void setRegistrations(Set<CourseRegistration> registrations) {
+        this.registrations = registrations;
     }
 
     @Override
