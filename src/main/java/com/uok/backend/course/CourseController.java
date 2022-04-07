@@ -17,22 +17,22 @@ public class CourseController {
     }
 
     // This method should be changed. before registering the users table should be checked
-    // and the user should be enrolled
+    // and the Lecturer should be enrolled
     @PostMapping()
     public void registerNewCourse(@RequestBody Course courseData) {
         courseService.addNewCourse(courseData);
     }
 
+    // This method should be changed. before registering the users table should be checked
+    // and the Student should be enrolled
     @PostMapping("/adduser/{userEmail}/{courseId}")
     public void enrollUserToCourse(@PathVariable String userEmail, @PathVariable String courseId) {
         courseService.addUserToCourse(userEmail, courseId);
     }
 
-    ////
     @GetMapping("{userEmail}")
     public List<CourseRegistration> checkEnrolledCourses(@PathVariable String userEmail) {
         return courseService.getEnrolledCourses(userEmail);
     }
-    ////
 
 }

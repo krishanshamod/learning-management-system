@@ -8,8 +8,7 @@ import java.util.List;
 
 @Repository
 public interface CourseRegistrationRepository extends JpaRepository<CourseRegistration, Integer> {
-    //// this should be changed to a jpa method if possible
+    // this should be changed to a jpa method if possible
     @Query(value = "SELECT * FROM course_registration where user_email = :userEmail", nativeQuery = true)
     List<CourseRegistration> findByUserEmail(String userEmail);
-    ////
 }

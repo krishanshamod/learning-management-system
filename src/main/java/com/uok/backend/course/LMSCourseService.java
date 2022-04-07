@@ -52,11 +52,9 @@ public class LMSCourseService implements CourseService {
     }
     //
 
-    ////
     @Override
     public List<CourseRegistration> getEnrolledCourses(String userEmail) {
         return courseRegistrationRepository.findByUserEmail(userEmail);
     }
-    ////
 
 }
