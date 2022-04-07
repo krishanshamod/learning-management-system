@@ -12,9 +12,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    ////
     @Column(name = "email", nullable = false, updatable = false, columnDefinition = "TEXT")
-    ////
     private String email;
     @Column(name = "first_name", nullable = false, columnDefinition = "TEXT")
     private String firstName;

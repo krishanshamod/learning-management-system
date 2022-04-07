@@ -7,20 +7,14 @@ import java.util.Set;
 public class Course {
 
     @Id
-    ////
     @Column(name = "id", nullable = false, updatable = false, columnDefinition = "TEXT")
-    ////
     private String id;
     @Column(name = "name", nullable = false, columnDefinition = "TEXT")
     private String name;
-
-    ////
     @OneToMany(mappedBy = "user")
     Set<CourseRegistration> registrations;
-    ////
 
     public Course() {
-
     }
 
     public Course(String id, String name) {
@@ -43,16 +37,6 @@ public class Course {
     public void setName(String name) {
         this.name = name;
     }
-
-    ////
-//    public List<User> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(List<User> users) {
-//        this.users = users;
-//    }
-    ////
 
     @Override
     public String toString() {

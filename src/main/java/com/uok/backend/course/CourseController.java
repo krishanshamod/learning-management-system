@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "course")
 public class CourseController {
+
     private CourseService courseService;
 
     @Autowired
