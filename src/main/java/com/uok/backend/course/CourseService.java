@@ -1,6 +1,6 @@
-package com.uok.backend.service;
+package com.uok.backend.course;
 
-import com.uok.backend.domain.Course;
+import com.uok.backend.course.Course;
 
 public interface CourseService {
 

@@ -1,7 +1,9 @@
-package com.uok.backend.domain;
+package com.uok.backend.course;
+
+import com.uok.backend.course.Course;
+import com.uok.backend.user.User;
 
 import javax.persistence.*;
-import java.util.Optional;
 
 @Entity
 public class CourseRegistration {

@@ -1,7 +1,8 @@
-package com.uok.backend.service;
+package com.uok.backend.user;
 
-import com.uok.backend.domain.User;
-import com.uok.backend.repository.UserRepository;
+import com.uok.backend.user.User;
+import com.uok.backend.user.UserRepository;
+import com.uok.backend.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,5 @@
-package com.uok.backend.api;
+package com.uok.backend.course;
 
-import com.uok.backend.service.CourseService;
-import com.uok.backend.domain.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

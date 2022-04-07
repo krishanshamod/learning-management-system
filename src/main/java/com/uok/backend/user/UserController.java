@@ -1,17 +1,15 @@
-package com.uok.backend.api;
+package com.uok.backend.user;
 
-import com.uok.backend.service.UserService;
-import com.uok.backend.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "user")
-public class AccDetailsController {
+public class UserController {
     private UserService userService;
 
     @Autowired
-    public AccDetailsController(UserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 

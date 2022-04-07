@@ -1,6 +1,4 @@
-package com.uok.backend.service;
-
-import com.uok.backend.domain.User;
+package com.uok.backend.user;
 
 public interface UserService {
 

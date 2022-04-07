@@ -1,8 +1,6 @@
-package com.uok.backend.domain;
+package com.uok.backend.course;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 @Entity
