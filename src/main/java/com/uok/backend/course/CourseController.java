@@ -3,6 +3,8 @@ package com.uok.backend.course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "course")
 public class CourseController {
@@ -25,5 +27,12 @@ public class CourseController {
     public void enrollUserToCourse(@PathVariable String userEmail, @PathVariable String courseId) {
         courseService.addUserToCourse(userEmail, courseId);
     }
+
+    ////
+    @GetMapping("{userEmail}")
+    public List<CourseRegistration> checkEnrolledCourses(@PathVariable String userEmail) {
+        return courseService.getEnrolledCourses(userEmail);
+    }
+    ////
 
 }
