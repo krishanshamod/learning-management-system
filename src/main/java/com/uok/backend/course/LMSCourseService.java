@@ -1,11 +1,7 @@
-package com.uok.backend.service;
+package com.uok.backend.course;
 
-import com.uok.backend.domain.Course;
-import com.uok.backend.domain.CourseRegistration;
-import com.uok.backend.domain.User;
-import com.uok.backend.repository.CourseRegistrationRepository;
-import com.uok.backend.repository.CourseRepository;
-import com.uok.backend.repository.UserRepository;
+import com.uok.backend.user.User;
+import com.uok.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

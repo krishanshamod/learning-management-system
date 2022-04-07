@@ -1,4 +1,6 @@
-package com.uok.backend.domain;
+package com.uok.backend.user;
+
+import com.uok.backend.course.CourseRegistration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,9 +12,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    ////
     @Column(name = "email", nullable = false, updatable = false, columnDefinition = "TEXT")
-    ////
     private String email;
     @Column(name = "first_name", nullable = false, columnDefinition = "TEXT")
     private String firstName;
