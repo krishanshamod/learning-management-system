@@ -24,7 +24,8 @@ public class CourseController {
     }
 
     // This method should be changed. before registering the users table should be checked
-    // and the Student should be enrolled
+    // and the Student should be enrolled. user_registrations table should also be checked
+    // to findout if the user is already enrolled
     @PostMapping("/adduser/{userEmail}/{courseId}")
     public void enrollUserToCourse(@PathVariable String userEmail, @PathVariable String courseId) {
         courseService.addUserToCourse(userEmail, courseId);
