@@ -6,16 +6,16 @@ import com.uok.backend.user.User;
 import javax.persistence.*;
 
 @Entity
+@IdClass(CourseRegistrationId.class)
 public class CourseRegistration {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
-    private Integer id;
     @ManyToOne
-    @JoinColumn(name = "user_email")
+    @JoinColumn(name = "user_email", nullable = false)
     private User user;
+    @Id
     @ManyToOne
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
     @Column(name = "marks", nullable = true)
     private Integer marks;
@@ -28,14 +28,6 @@ public class CourseRegistration {
     }
 
     public CourseRegistration() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public User getUser() {
