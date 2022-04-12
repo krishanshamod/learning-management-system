@@ -33,7 +33,7 @@ public class CourseController {
     }
 
     @GetMapping("{userEmail}")
-    public List<String> checkEnrolledCourses(@PathVariable String userEmail) {
+    public List<CourseRegistration> checkEnrolledCourses(@PathVariable String userEmail) {
         return courseService.getEnrolledCourses(userEmail);
     }
 

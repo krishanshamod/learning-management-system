@@ -8,6 +8,6 @@ public interface CourseService {
 
     void addNewCourse(Course courseData);
     void addUserToCourse(String userEmail, String courseId);
-    List<String> getEnrolledCourses(String userEmail);
+    List<CourseRegistration> getEnrolledCourses(String userEmail);
 
 }
