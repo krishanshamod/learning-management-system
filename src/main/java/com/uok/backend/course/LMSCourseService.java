@@ -28,6 +28,7 @@ public class LMSCourseService implements CourseService {
 
     @Override
     public void addNewCourse(Course courseData) {
+
         courseRepository.save(courseData);
     }
 
@@ -38,16 +39,7 @@ public class LMSCourseService implements CourseService {
         Optional<User> userOptional = userRepository.findById(userEmail);
 
         if (userOptional.isPresent() && courseOptional.isPresent()) {
-
-            Course course = new Course(courseOptional.get().getId(), courseOptional.get().getName());
-            User user = new User(
-                    userOptional.get().getEmail(),
-                    userOptional.get().getFirstName(),
-                    userOptional.get().getLastName(),
-                    userOptional.get().getRole()
-            );
-
-            courseRegistrationRepository.save(new CourseRegistration(user, course));
+            courseRegistrationRepository.addUserToCourse(userEmail, courseId);
         }
     }
     //
