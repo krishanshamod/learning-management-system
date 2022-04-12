@@ -14,8 +14,8 @@ import java.util.List;
 public interface CourseRegistrationRepository extends JpaRepository<CourseRegistration, Integer> {
     //FIXME
     // this should be changed to a jpa method if possible
-    @Query(value = "SELECT * FROM course_registration where user_email = :userEmail", nativeQuery = true)
-    List<CourseRegistration> findByUserEmail(String userEmail);
+    @Query(value = "SELECT course.name FROM course_registration INNER JOIN course ON course_registration.course_id = course.id WHERE user_email = :userEmail", nativeQuery = true)
+    List<String> findByUserEmail(String userEmail);
 
     //FIXME
     // this should be changed to a jpa method if possible
