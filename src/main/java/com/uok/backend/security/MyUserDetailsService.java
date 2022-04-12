@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        //Returning a default user to pass the authentication becuase we did pre authentication for every JWT token
+        //Returning a default user to pass the spring security authentication because we did pre authentication for every JWT token
         return new User("defaultUser", "defaultPassword", new ArrayList<>());
     }
 }
