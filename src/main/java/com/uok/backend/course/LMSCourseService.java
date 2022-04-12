@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static java.sql.Types.NULL;
+
 @Service
 public class LMSCourseService implements CourseService {
 

@@ -13,6 +13,7 @@ import java.util.List;
 public interface CourseRegistrationRepository extends JpaRepository<CourseRegistration, Integer> {
 
     List<CourseRegistration> findAllByUserEmail(String userEmail);
+    List<CourseRegistration> findByCourseIdAndUserEmail(String courseId, String userEmail);
 
     //FIXME
     // this should be changed to a jpa method if possible

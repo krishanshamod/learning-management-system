@@ -26,7 +26,7 @@ public class CourseController {
     }
 
     //TODO
-    //before registering the users table should be checked
+    // before registering the users table should be checked
     // and the Student should be enrolled.
     @PostMapping("/adduser/{userEmail}/{courseId}")
     public void enrollUserToCourse(@PathVariable String userEmail, @PathVariable String courseId) {
