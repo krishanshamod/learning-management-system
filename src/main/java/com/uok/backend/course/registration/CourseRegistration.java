@@ -1,4 +1,4 @@
-package com.uok.backend.course;
+package com.uok.backend.course.registration;
 
 import com.uok.backend.course.Course;
 import com.uok.backend.user.User;

@@ -1,5 +1,7 @@
 package com.uok.backend.course;
 
+import com.uok.backend.course.registration.CourseRegistration;
+import com.uok.backend.course.registration.CourseRegistrationRepository;
 import com.uok.backend.user.User;
 import com.uok.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

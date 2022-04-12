@@ -1,6 +1,6 @@
 package com.uok.backend.course;
 
-import com.uok.backend.course.Course;
+import com.uok.backend.course.registration.CourseRegistration;
 
 import java.util.List;
 

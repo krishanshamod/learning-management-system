@@ -1,5 +1,7 @@
 package com.uok.backend.course;
 
+import com.uok.backend.course.registration.CourseRegistration;
+
 import javax.persistence.*;
 import java.util.Set;
 
