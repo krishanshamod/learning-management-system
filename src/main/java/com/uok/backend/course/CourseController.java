@@ -32,9 +32,14 @@ public class CourseController {
         courseService.addUserToCourse(userEmail, courseId);
     }
 
-    @GetMapping("{userEmail}")
+    @GetMapping("/enrolled/{userEmail}")
     public List<CourseRegistration> checkEnrolledCourses(@PathVariable String userEmail) {
         return courseService.getEnrolledCourses(userEmail);
+    }
+
+    @GetMapping("/available/{userEmail}")
+    public List<Course> checkAvailableCourses(@PathVariable String userEmail) {
+        return courseService.getAvailableCourses(userEmail);
     }
 
 }

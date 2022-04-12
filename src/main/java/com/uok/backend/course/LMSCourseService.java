@@ -50,4 +50,12 @@ public class LMSCourseService implements CourseService {
         return courseRegistrationRepository.findAllByUserEmail(userEmail);
     }
 
+    @Override
+    public List<Course> getAvailableCourses(String userEmail) {
+        List<Course> allCourses = courseRepository.findAll();
+        courseRegistrationRepository.findAllByUserEmail(userEmail).forEach(course -> {
+            allCourses.removeIf(c -> c.getId().equals(course.getCourse().getId()));
+        });
+        return allCourses;
+    }
 }
