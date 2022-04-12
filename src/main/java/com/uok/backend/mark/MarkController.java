@@ -23,4 +23,9 @@ public class MarkController {
         markService.addCourseMarks(courseId, userEmail, mark);
     }
 
+    @GetMapping("/{userEmail}/{courseId}")
+    public Integer getMarksForCourse(@PathVariable String userEmail, @PathVariable String courseId) {
+        return markService.getMarksForACourse(userEmail , courseId);
+    }
+
 }

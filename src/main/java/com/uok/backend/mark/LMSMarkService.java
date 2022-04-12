@@ -26,4 +26,13 @@ public class LMSMarkService implements MarkService {
             courseRegistration.get(0).setMarks(marks);
         }
     }
+
+    @Override
+    public Integer getMarksForACourse(String userEmail, String courseId) {
+        List<CourseRegistration> courseRegistration = courseRegistrationRepository.findByCourseIdAndUserEmail(courseId, userEmail);
+        if (courseRegistration.size() == 1) {
+            return courseRegistration.get(0).getMarks();
+        }
+        return null;
+    }
 }
