@@ -1,6 +1,6 @@
 package com.uok.backend.user;
 
-import com.uok.backend.course.CourseRegistration;
+import com.uok.backend.course.registration.CourseRegistration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

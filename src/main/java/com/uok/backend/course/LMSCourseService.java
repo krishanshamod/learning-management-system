@@ -1,5 +1,7 @@
 package com.uok.backend.course;
 
+import com.uok.backend.course.registration.CourseRegistration;
+import com.uok.backend.course.registration.CourseRegistrationRepository;
 import com.uok.backend.user.User;
 import com.uok.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static java.sql.Types.NULL;
 
 @Service
 public class LMSCourseService implements CourseService {

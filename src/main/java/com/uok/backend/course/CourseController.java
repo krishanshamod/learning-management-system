@@ -1,5 +1,6 @@
 package com.uok.backend.course;
 
+import com.uok.backend.course.registration.CourseRegistration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class CourseController {
     }
 
     //TODO
-    //before registering the users table should be checked
+    // before registering the users table should be checked
     // and the Student should be enrolled.
     @PostMapping("/adduser/{userEmail}/{courseId}")
     public void enrollUserToCourse(@PathVariable String userEmail, @PathVariable String courseId) {
