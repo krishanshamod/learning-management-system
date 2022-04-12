@@ -57,6 +57,16 @@ public class CourseRegistration {
     //TODO
     // should implement the proper method
     public char getGrade() {
+        if (marks >= 75 && marks <= 100)
+            return 'A';
+        else if (marks >= 65 && marks <= 74)
+            return 'B';
+        else if (marks >= 55 && marks <= 64)
+            return 'C';
+        else if (marks >= 35 && marks <= 54)
+            return 'S';
+        else if (marks >= 0 && marks <= 34)
+            return 'F';
         return grade;
     }
 
