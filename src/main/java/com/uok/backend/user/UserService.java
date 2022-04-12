@@ -4,7 +4,8 @@ public interface UserService {
 
     User getUserByEmail(String email);
 
-    //forTesting purposes
+    //FIXME
+    // forTesting purposes
     void addNewUser(User userData);
     //
 }

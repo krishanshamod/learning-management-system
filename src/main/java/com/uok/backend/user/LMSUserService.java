@@ -21,7 +21,8 @@ public class LMSUserService implements UserService {
         return userRepository.findById(email).get();
     }
 
-    //forTesting purposes
+    //FIXME
+    // forTesting purposes
     @Override
     public void addNewUser(User userData) {
         userRepository.save(userData);

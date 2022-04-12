@@ -13,13 +13,15 @@ public class UserController {
         this.userService = userService;
     }
 
-    //should implement jwt
+    //FIXME
+    // should implement jwt
     @GetMapping("{email}")
     public User getUserByToken(@PathVariable String email) {
         return userService.getUserByEmail(email);
     }
 
-    //forTesting purposes
+    //FIXME
+    // forTesting purposes
     @PostMapping()
     public void registerNewUser(@RequestBody User userData) {
         userService.addNewUser(userData);

@@ -32,7 +32,8 @@ public class LMSCourseService implements CourseService {
         courseRepository.save(courseData);
     }
 
-    //this method should be changed in future
+    //TODO
+    // this method should be changed in future
     @Override
     public void addUserToCourse(String userEmail, String courseId) {
         Optional<Course> courseOptional = courseRepository.findById(courseId);

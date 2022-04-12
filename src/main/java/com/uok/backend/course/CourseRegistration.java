@@ -54,7 +54,8 @@ public class CourseRegistration {
         this.marks = marks;
     }
 
-    //should implement the proper method
+    //TODO
+    // should implement the proper method
     public char getGrade() {
         return grade;
     }
