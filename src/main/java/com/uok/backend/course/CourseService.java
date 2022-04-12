@@ -8,7 +8,7 @@ public interface CourseService {
 
     void addNewCourse(Course courseData);
     void addUserToCourse(String userEmail, String courseId);
-    List<CourseRegistration> getEnrolledCourses(String userEmail);
+    List<Course> getEnrolledCourses(String userEmail);
     List<Course> getAvailableCourses(String userEmail);
 
 }

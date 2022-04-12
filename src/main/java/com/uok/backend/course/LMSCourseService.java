@@ -7,6 +7,7 @@ import com.uok.backend.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,11 +48,14 @@ public class LMSCourseService implements CourseService {
             courseRegistrationRepository.addUserToCourse(userEmail, courseId);
         }
     }
-    //
 
     @Override
-    public List<CourseRegistration> getEnrolledCourses(String userEmail) {
-        return courseRegistrationRepository.findAllByUserEmail(userEmail);
+    public List<Course> getEnrolledCourses(String userEmail) {
+        List<Course> enrolledCourses = new ArrayList<>();
+        courseRegistrationRepository.findAllByUserEmail(userEmail).forEach(course -> {
+            enrolledCourses.add(course.getCourse());
+        });
+        return  enrolledCourses;
     }
 
     @Override

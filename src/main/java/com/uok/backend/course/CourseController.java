@@ -34,7 +34,7 @@ public class CourseController {
     }
 
     @GetMapping("/enrolled/{userEmail}")
-    public List<CourseRegistration> checkEnrolledCourses(@PathVariable String userEmail) {
+    public List<Course> checkEnrolledCourses(@PathVariable String userEmail) {
         return courseService.getEnrolledCourses(userEmail);
     }
 
