@@ -28,4 +28,9 @@ public class MarkController {
         return markService.getMarksForACourse(userEmail , courseId);
     }
 
+    @GetMapping("/{userEmail}")
+    public List<CourseRegistration> getMarksForUser(@PathVariable String userEmail) {
+        return markService.getMarksForUser(userEmail);
+    }
+
 }
