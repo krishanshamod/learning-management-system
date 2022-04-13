@@ -2,10 +2,7 @@ package com.uok.backend.announcement;
 
 import com.uok.backend.course.Course;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,6 +27,12 @@ public class Announcement {
     private LocalDateTime timeStamp;
 
     public Announcement() {
+    }
+
+    public Announcement(String id, String title, String content) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
     }
 
     public Announcement(String id, Course course, String title, String content, LocalDateTime timeStamp) {
