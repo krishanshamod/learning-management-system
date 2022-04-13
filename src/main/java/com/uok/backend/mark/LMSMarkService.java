@@ -35,4 +35,12 @@ public class LMSMarkService implements MarkService {
         }
         return null;
     }
+
+    //TODO: change this to return a list of courses and marks only
+    @Override
+    public List<CourseRegistration> getMarksForUser(String userEmail) {
+        List<CourseRegistration> courseRegistrations = courseRegistrationRepository.findAllByUserEmail(userEmail);
+        courseRegistrations.removeIf(Objects.requireNonNull(courseRegistration -> courseRegistration.getMarks() == null));
+        return courseRegistrations;
+    }
 }
