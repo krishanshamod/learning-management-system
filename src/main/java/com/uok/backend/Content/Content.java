@@ -1,0 +1,81 @@
+package com.uok.backend.Content;
+
+import com.uok.backend.course.Course;
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+@IdClass(ContentId.class)
+public class Content {
+
+    @Id
+    @Column(name = "course_id")
+    private String courseId;
+
+    //TODO: should implement foreign key
+    @OneToOne
+    @PrimaryKeyJoinColumn(name = "course_id", referencedColumnName = "id")
+    private Course course;
+
+    @Id
+    @Column(name = "title")
+    private String title;
+    @Column(name = "content")
+    private String content;
+    @CreationTimestamp
+    @Column(name = "time_stamp")
+    private LocalDateTime timeStamp;
+
+    public Content() {
+
+    }
+
+    public Content(String courseId, Course course, String title, String content) {
+        this.courseId = courseId;
+        this.course = course;
+        this.title = title;
+        this.content = content;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String id) {
+        this.courseId = id;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public LocalDateTime getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(LocalDateTime timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+}
