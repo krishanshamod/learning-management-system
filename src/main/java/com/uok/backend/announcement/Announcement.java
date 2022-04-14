@@ -6,16 +6,19 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@IdClass(AnnouncementId.class)
 public class Announcement {
 
     @Id
     @Column(name = "course_id")
     private String id;
 
+    //TODO: should implement foreign key
     @OneToOne
     @PrimaryKeyJoinColumn(name = "course_id", referencedColumnName = "id")
     private Course course;
 
+    @Id
     @Column(name = "title")
     private String title;
 
