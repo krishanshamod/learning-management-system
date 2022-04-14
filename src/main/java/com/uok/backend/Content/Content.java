@@ -15,9 +15,10 @@ public class Content {
     private String courseId;
 
     //TODO: should implement foreign key
-    @OneToOne
-    @PrimaryKeyJoinColumn(name = "course_id", referencedColumnName = "id")
-    private Course course;
+//    @Id
+//    @OneToOne
+//    @PrimaryKeyJoinColumn(name = "course_id", referencedColumnName = "id")
+//    private Course course;
 
     @Id
     @Column(name = "title")
@@ -32,9 +33,8 @@ public class Content {
 
     }
 
-    public Content(String courseId, Course course, String title, String content) {
+    public Content(String courseId, String title, String content) {
         this.courseId = courseId;
-        this.course = course;
         this.title = title;
         this.content = content;
     }
@@ -45,14 +45,6 @@ public class Content {
 
     public void setCourseId(String id) {
         this.courseId = id;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
     }
 
     public String getTitle() {

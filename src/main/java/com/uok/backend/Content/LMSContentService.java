@@ -3,6 +3,9 @@ package com.uok.backend.Content;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class LMSContentService implements ContentService{
 
@@ -16,5 +19,10 @@ public class LMSContentService implements ContentService{
     @Override
     public void addContentToACourse(Content content) {
         contentRepository.save(content);
+    }
+
+    @Override
+    public List<Content> getContentForACourse(String courseId) {
+        return contentRepository.findByCourseId(courseId);
     }
 }
