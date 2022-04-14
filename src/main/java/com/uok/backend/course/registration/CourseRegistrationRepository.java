@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface CourseRegistrationRepository extends JpaRepository<CourseRegistration, Integer> {
+public interface CourseRegistrationRepository extends JpaRepository<CourseRegistration, CourseRegistrationId> {
 
     List<CourseRegistration> findAllByUserEmail(String userEmail);
     List<CourseRegistration> findByCourseIdAndUserEmail(String courseId, String userEmail);
