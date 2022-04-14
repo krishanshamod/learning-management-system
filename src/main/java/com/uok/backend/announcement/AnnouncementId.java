@@ -4,14 +4,14 @@ import java.io.Serializable;
 
 public class AnnouncementId implements Serializable {
     private String title;
-    private String id;
+    private String courseId;
 
     public AnnouncementId() {
     }
 
-    public AnnouncementId(String title, String id) {
+    public AnnouncementId(String title, String courseId) {
         this.title = title;
-        this.id = id;
+        this.courseId = courseId;
     }
 
     @Override

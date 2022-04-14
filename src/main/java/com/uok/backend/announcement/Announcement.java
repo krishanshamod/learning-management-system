@@ -1,6 +1,5 @@
 package com.uok.backend.announcement;
 
-import com.uok.backend.course.Course;
 import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,12 +10,12 @@ public class Announcement {
 
     @Id
     @Column(name = "course_id")
-    private String id;
+    private String courseId;
 
     //TODO: should implement foreign key
-    @OneToOne
-    @PrimaryKeyJoinColumn(name = "course_id", referencedColumnName = "id")
-    private Course course;
+//    @OneToOne
+//    @PrimaryKeyJoinColumn(name = "course_id", referencedColumnName = "id")
+//    private Course course;
 
     @Id
     @Column(name = "title")
@@ -32,35 +31,35 @@ public class Announcement {
     public Announcement() {
     }
 
-    public Announcement(String id, String title, String content) {
-        this.id = id;
+    public Announcement(String courseId, String title, String content) {
+        this.courseId = courseId;
         this.title = title;
         this.content = content;
     }
 
-    public Announcement(String id, Course course, String title, String content, LocalDateTime timeStamp) {
-        this.id = id;
-        this.course = course;
+    public Announcement(String courseId, String title, String content, LocalDateTime timeStamp) {
+        this.courseId = courseId;
+//        this.course = course;
         this.title = title;
         this.content = content;
         this.timeStamp = timeStamp;
     }
 
-    public String getId() {
-        return id;
+    public String getCourseId() {
+        return courseId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setCourseId(String id) {
+        this.courseId = id;
     }
 
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
+//    public Course getCourse() {
+//        return course;
+//    }
+//
+//    public void setCourse(Course course) {
+//        this.course = course;
+//    }
 
     public String getTitle() {
         return title;

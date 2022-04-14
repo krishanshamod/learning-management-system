@@ -4,6 +4,8 @@ import com.uok.backend.course.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class LMSAnnouncementService implements AnnouncementService {
 
@@ -17,9 +19,9 @@ public class LMSAnnouncementService implements AnnouncementService {
     public AddAnnouncementResponse addAnnouncement(Announcement announcement) {
 
         // check requested data is present or not
-        if(announcement.getId() != null && announcement.getTitle() != null && announcement.getContent() != null) {
+        if(announcement.getCourseId() != null && announcement.getTitle() != null && announcement.getContent() != null) {
             // check if the course is exists or not
-            if(courseRepository.findById(announcement.getId()) != null) {
+            if(courseRepository.findById(announcement.getCourseId()) != null) {
                 // need to implement email sending functionality
 
                 // add announcement to the database
@@ -34,4 +36,8 @@ public class LMSAnnouncementService implements AnnouncementService {
         }
     }
 
+    @Override
+    public List<Announcement> getAnnouncementsForACourse(String CourseId) {
+        return announcementRepository.findByCourseId(CourseId);
+    }
 }
