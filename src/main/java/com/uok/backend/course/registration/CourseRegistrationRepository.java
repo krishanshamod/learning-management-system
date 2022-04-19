@@ -1,6 +1,5 @@
 package com.uok.backend.course.registration;
 
-import com.uok.backend.course.registration.CourseRegistration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,8 +14,6 @@ public interface CourseRegistrationRepository extends JpaRepository<CourseRegist
     List<CourseRegistration> findAllByUserEmail(String userEmail);
     List<CourseRegistration> findByCourseIdAndUserEmail(String courseId, String userEmail);
 
-    //FIXME
-    // this should be changed to a jpa method if possible
     @Modifying
     @Transactional
     @Query(

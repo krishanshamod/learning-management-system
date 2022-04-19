@@ -1,11 +1,8 @@
 package com.uok.backend.course;
 
-import com.uok.backend.course.registration.CourseRegistration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "course")
