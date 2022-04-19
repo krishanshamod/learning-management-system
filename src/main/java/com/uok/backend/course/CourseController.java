@@ -33,9 +33,8 @@ public class CourseController {
         return courseService.getEnrolledCourses();
     }
 
-    @GetMapping("/available/{userEmail}")
-    public List<Course> checkAvailableCourses(@PathVariable String userEmail) {
-        return courseService.getAvailableCourses(userEmail);
+    @GetMapping("availablecourses")
+    public ResponseEntity checkAvailableCourses() {
+        return courseService.getAvailableCourses();
     }
-
 }

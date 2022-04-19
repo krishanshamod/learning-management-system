@@ -3,9 +3,6 @@ package com.uok.backend.course;
 import com.uok.backend.course.registration.CourseRegistrationRepository;
 import com.uok.backend.exceptions.CourseRegistrationException;
 import com.uok.backend.exceptions.DataMissingException;
-import com.uok.backend.security.JwtRequestFilter;
-import com.uok.backend.security.TokenValidator;
-import com.uok.backend.user.User;
 import com.uok.backend.user.UserRepository;
 import com.uok.backend.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LMSCourseService implements CourseService {
@@ -110,11 +106,24 @@ public class LMSCourseService implements CourseService {
     }
 
     @Override
-    public List<Course> getAvailableCourses(String userEmail) {
-        List<Course> allCourses = courseRepository.findAll();
-        courseRegistrationRepository.findAllByUserEmail(userEmail).forEach(course -> {
-            allCourses.removeIf(c -> c.getId().equals(course.getCourse().getId()));
+    public ResponseEntity getAvailableCourses() {
+
+        String email = userService.getTokenUser().getEmail();
+
+        List<Course> availableCourses = courseRepository.findAll();
+
+        // get all available courses for that user
+        courseRegistrationRepository.findAllByUserEmail(email).forEach(course -> {
+            availableCourses.removeIf(c -> c.getId().equals(course.getCourse().getId()));
         });
-        return allCourses;
+
+        List<GetCourseResponse> availableCoursesResponse = new ArrayList<>();
+
+        // Convert available courses to response format
+        availableCourses.forEach(course -> {
+            availableCoursesResponse.add(new GetCourseResponse(course.getId(), course.getName()));
+        });
+
+        return ResponseEntity.ok(availableCoursesResponse);
     }
 }
