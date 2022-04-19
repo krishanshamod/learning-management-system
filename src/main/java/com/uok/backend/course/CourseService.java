@@ -8,7 +8,7 @@ import java.util.List;
 public interface CourseService {
 
     ResponseEntity addNewCourse(Course courseData);
-    void addUserToCourse(String userEmail, String courseId);
+    ResponseEntity addUserToCourse(CourseEnrollRequest courseEnrollRequest);
     List<Course> getEnrolledCourses(String userEmail);
     List<Course> getAvailableCourses(String userEmail);
 

@@ -73,15 +73,25 @@ public class LMSCourseService implements CourseService {
         }
     }
 
-    //TODO
-    // this method should be changed in future
     @Override
-    public void addUserToCourse(String userEmail, String courseId) {
-        Optional<Course> courseOptional = courseRepository.findById(courseId);
-        Optional<User> userOptional = userRepository.findById(userEmail);
+    public ResponseEntity addUserToCourse(CourseEnrollRequest courseEnrollRequest) {
 
-        if (userOptional.isPresent() && courseOptional.isPresent()) {
-            courseRegistrationRepository.addUserToCourse(userEmail, courseId);
+        String email = userService.getTokenUser().getEmail();
+
+        try {
+            // check all data received or not
+            if (courseEnrollRequest.getCourseId() == null) {
+                throw new DataMissingException("Course ID is missing");
+            }
+
+            // add user to the course
+            courseRegistrationRepository.addUserToCourse(email, courseEnrollRequest.getCourseId());
+
+            return ResponseEntity.ok().build();
+
+        } catch (DataMissingException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
