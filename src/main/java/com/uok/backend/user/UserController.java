@@ -13,8 +13,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    //FIXME
-    // should implement jwt
     @GetMapping("{email}")
     public User getUserByToken(@PathVariable String email) {
         return userService.getUserByEmail(email);

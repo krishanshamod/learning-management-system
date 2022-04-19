@@ -17,13 +17,15 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
     private MyUserDetailsService userDetailsService;
+    private TokenValidator tokenValidator;
+    public static String validatedToken = null;
 
     @Autowired
-    private TokenValidator tokenValidator;
-
-    public static String validatedToken = null;
+    public JwtRequestFilter(MyUserDetailsService myUserDetailsService, TokenValidator tokenValidator) {
+        this.userDetailsService = myUserDetailsService;
+        this.tokenValidator = tokenValidator;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
