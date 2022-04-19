@@ -28,9 +28,9 @@ public class CourseController {
         return courseService.addUserToCourse(courseEnrollRequest);
     }
 
-    @GetMapping("/enrolled/{userEmail}")
-    public List<Course> checkEnrolledCourses(@PathVariable String userEmail) {
-        return courseService.getEnrolledCourses(userEmail);
+    @GetMapping("enrolledcourses")
+    public ResponseEntity checkEnrolledCourses() {
+        return courseService.getEnrolledCourses();
     }
 
     @GetMapping("/available/{userEmail}")

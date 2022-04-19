@@ -96,12 +96,17 @@ public class LMSCourseService implements CourseService {
     }
 
     @Override
-    public List<Course> getEnrolledCourses(String userEmail) {
-        List<Course> enrolledCourses = new ArrayList<>();
-        courseRegistrationRepository.findAllByUserEmail(userEmail).forEach(course -> {
-            enrolledCourses.add(course.getCourse());
+    public ResponseEntity getEnrolledCourses() {
+
+        String email = userService.getTokenUser().getEmail();
+
+        List<GetCourseResponse> enrolledCourses = new ArrayList<>();
+
+        courseRegistrationRepository.findAllByUserEmail(email).forEach(course -> {
+            enrolledCourses.add(new GetCourseResponse(course.getCourse().getId(), course.getCourse().getName()));
         });
-        return  enrolledCourses;
+
+        return ResponseEntity.ok(enrolledCourses);
     }
 
     @Override
