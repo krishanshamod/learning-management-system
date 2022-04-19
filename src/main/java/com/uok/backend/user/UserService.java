@@ -4,8 +4,10 @@ import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
+    ResponseEntity addUser();
+
     ResponseEntity getUser();
 
-    // FIXME : for testing only
-    void addNewUser(User userData);
+    User getTokenUser();
+
 }

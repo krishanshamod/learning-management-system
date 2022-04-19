@@ -14,16 +14,14 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping("adduser")
+    public ResponseEntity addUser() {
+        return userService.addUser();
+    }
+
     @GetMapping("getuser")
     public ResponseEntity getUser() {
         return userService.getUser();
-    }
-
-    //FIXME
-    // forTesting purposes
-    @PostMapping()
-    public void registerNewUser(@RequestBody User userData) {
-        userService.addNewUser(userData);
     }
 
 }

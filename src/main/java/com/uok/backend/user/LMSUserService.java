@@ -2,9 +2,6 @@ package com.uok.backend.user;
 
 import com.uok.backend.security.JwtRequestFilter;
 import com.uok.backend.security.TokenValidator;
-import com.uok.backend.user.User;
-import com.uok.backend.user.UserRepository;
-import com.uok.backend.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,25 +19,31 @@ public class LMSUserService implements UserService {
     }
 
     @Override
+    public ResponseEntity addUser() {
+        String email = getTokenUser().getEmail();
+
+        // if user is not in the database, then add user to the database
+        if (userRepository.findById(email).isEmpty()) {
+            userRepository.save(getTokenUser());
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
     public ResponseEntity getUser() {
+        return ResponseEntity.ok(getTokenUser());
+    }
+
+    @Override
+    public User getTokenUser() {
         String token = JwtRequestFilter.validatedToken;
+
         String email = tokenValidator.getEmailFromToken(token);
         String firstName = tokenValidator.getFirstNameFromToken(token);
         String lastName = tokenValidator.getLastNameFromToken(token);
         String role = tokenValidator.getRoleFromToken(token);
 
-        // if user is not in the database, then add user to the database
-        if (userRepository.findById(email).isEmpty()) {
-            userRepository.save(new User(email, firstName, lastName, role));
-        }
-
-        return ResponseEntity.ok(new User(email, firstName, lastName, role));
-    }
-
-    //FIXME
-    // forTesting purposes
-    @Override
-    public void addNewUser(User userData) {
-        userRepository.save(userData);
+        return new User(email, firstName, lastName, role);
     }
 }

@@ -7,6 +7,7 @@ import com.uok.backend.security.JwtRequestFilter;
 import com.uok.backend.security.TokenValidator;
 import com.uok.backend.user.User;
 import com.uok.backend.user.UserRepository;
+import com.uok.backend.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,33 +22,25 @@ public class LMSCourseService implements CourseService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final CourseRegistrationRepository courseRegistrationRepository;
-    private final TokenValidator tokenValidator;
+    private final UserService userService;
 
     @Autowired
     public LMSCourseService (
             CourseRepository courseRepository,
             UserRepository userRepository,
             CourseRegistrationRepository courseRegistrationRepository,
-            TokenValidator tokenValidator
+            UserService userService
     ) {
         this.courseRepository = courseRepository;
         this.userRepository = userRepository;
         this.courseRegistrationRepository = courseRegistrationRepository;
-        this.tokenValidator = tokenValidator;
+        this.userService = userService;
     }
 
     @Override
     public ResponseEntity addNewCourse(Course courseData) {
-        String token = JwtRequestFilter.validatedToken;
-        String email = tokenValidator.getEmailFromToken(token);
-        String firstName = tokenValidator.getFirstNameFromToken(token);
-        String lastName = tokenValidator.getLastNameFromToken(token);
-        String role = tokenValidator.getRoleFromToken(token);
 
-        // if user is not in the database, then add user to the database
-        if (userRepository.findById(email).isEmpty()) {
-            userRepository.save(new User(email, firstName, lastName, role));
-        }
+        String email = userService.getTokenUser().getEmail();
 
         try {
 
