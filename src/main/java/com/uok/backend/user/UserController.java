@@ -1,6 +1,7 @@
 package com.uok.backend.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,9 +14,9 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("{email}")
-    public User getUserByToken(@PathVariable String email) {
-        return userService.getUserByEmail(email);
+    @GetMapping("getuser")
+    public ResponseEntity getUser() {
+        return userService.getUser();
     }
 
     //FIXME

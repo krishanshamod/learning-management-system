@@ -1,8 +1,10 @@
 package com.uok.backend.user;
 
+import org.springframework.http.ResponseEntity;
+
 public interface UserService {
 
-    User getUserByEmail(String email);
+    ResponseEntity getUser();
 
     // FIXME : for testing only
     void addNewUser(User userData);
