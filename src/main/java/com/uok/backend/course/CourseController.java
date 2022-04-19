@@ -2,6 +2,7 @@ package com.uok.backend.course;
 
 import com.uok.backend.course.registration.CourseRegistration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +18,9 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-    //TODO
-    // before registering the users table should be checked
-    // and the Lecturer should be enrolled
-    @PostMapping()
-    public void registerNewCourse(@RequestBody Course courseData) {
-        courseService.addNewCourse(courseData);
+    @PostMapping("addnewcourse")
+    public ResponseEntity registerNewCourse(@RequestBody Course courseData) {
+        return courseService.addNewCourse(courseData);
     }
 
     //TODO
