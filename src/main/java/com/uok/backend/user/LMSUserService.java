@@ -25,8 +25,16 @@ public class LMSUserService implements UserService {
     public ResponseEntity getUser() {
         String token = JwtRequestFilter.validatedToken;
         String email = tokenValidator.getEmailFromToken(token);
+        String firstName = tokenValidator.getFirstNameFromToken(token);
+        String lastName = tokenValidator.getLastNameFromToken(token);
+        String role = tokenValidator.getRoleFromToken(token);
 
-        return ResponseEntity.ok(userRepository.findById(email).get());
+        // if user is not in the database, then add user to the database
+        if (userRepository.findById(email).isEmpty()) {
+            userRepository.save(new User(email, firstName, lastName, role));
+        }
+
+        return ResponseEntity.ok(new User(email, firstName, lastName, role));
     }
 
     //FIXME
