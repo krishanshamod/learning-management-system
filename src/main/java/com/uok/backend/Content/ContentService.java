@@ -7,5 +7,5 @@ import java.util.List;
 public interface ContentService {
     ResponseEntity addContentToACourse(Content content);
 
-    List<Content> getContentForACourse(String courseId);
+    ResponseEntity getContentForACourse(GetContentRequest getContentRequest);
 }

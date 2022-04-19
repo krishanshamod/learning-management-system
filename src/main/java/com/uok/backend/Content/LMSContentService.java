@@ -6,9 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 public class LMSContentService implements ContentService{
 
@@ -45,7 +42,19 @@ public class LMSContentService implements ContentService{
     }
 
     @Override
-    public List<Content> getContentForACourse(String courseId) {
-        return contentRepository.findByCourseId(courseId);
+    public ResponseEntity getContentForACourse(GetContentRequest getContentRequest) {
+
+        try {
+            // check all the data is received or not
+            if (getContentRequest.getCourseId() == null) {
+                throw new DataMissingException("CourseId is Missing");
+            }
+
+            return ResponseEntity.ok(contentRepository.findByCourseId(getContentRequest.getCourseId()));
+
+        } catch (DataMissingException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

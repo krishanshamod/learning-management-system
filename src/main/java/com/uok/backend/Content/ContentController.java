@@ -22,8 +22,8 @@ public class ContentController {
         return contentService.addContentToACourse(content);
     }
 
-    @GetMapping("/{courseId}")
-    public List<Content> getContentForACourse(@PathVariable String courseId) {
-        return contentService.getContentForACourse(courseId);
+    @PostMapping("getcontent")
+    public ResponseEntity getContentForACourse(@RequestBody GetContentRequest getContentRequest) {
+        return contentService.getContentForACourse(getContentRequest);
     }
 }
