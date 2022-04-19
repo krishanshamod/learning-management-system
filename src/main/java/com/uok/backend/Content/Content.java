@@ -1,6 +1,5 @@
 package com.uok.backend.Content;
 
-import com.uok.backend.course.Course;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
