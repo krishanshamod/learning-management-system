@@ -39,7 +39,6 @@ public class Announcement {
 
     public Announcement(String courseId, String title, String content, LocalDateTime timeStamp) {
         this.courseId = courseId;
-//        this.course = course;
         this.title = title;
         this.content = content;
         this.timeStamp = timeStamp;
@@ -52,14 +51,6 @@ public class Announcement {
     public void setCourseId(String id) {
         this.courseId = id;
     }
-
-//    public Course getCourse() {
-//        return course;
-//    }
-//
-//    public void setCourse(Course course) {
-//        this.course = course;
-//    }
 
     public String getTitle() {
         return title;

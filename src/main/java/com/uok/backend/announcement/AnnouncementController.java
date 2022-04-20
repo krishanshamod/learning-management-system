@@ -1,6 +1,7 @@
 package com.uok.backend.announcement;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,11 +10,15 @@ import java.util.List;
 @RequestMapping(path = "announcement")
 public class AnnouncementController {
 
-    @Autowired
     private AnnouncementService announcementService;
 
-    @PostMapping("/addannouncement")
-    public AddAnnouncementResponse addAnnouncement(@RequestBody Announcement announcement) {
+    @Autowired
+    public AnnouncementController(AnnouncementService announcementService) {
+        this.announcementService = announcementService;
+    }
+
+    @PostMapping("addannouncement")
+    public ResponseEntity addAnnouncement(@RequestBody Announcement announcement) {
         return announcementService.addAnnouncement(announcement);
     }
 

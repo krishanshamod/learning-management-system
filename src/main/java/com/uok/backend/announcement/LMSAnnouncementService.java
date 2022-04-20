@@ -1,7 +1,10 @@
 package com.uok.backend.announcement;
 
 import com.uok.backend.course.CourseRepository;
+import com.uok.backend.exceptions.AnnouncementAddingFailureException;
+import com.uok.backend.exceptions.DataMissingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -9,30 +12,39 @@ import java.util.List;
 @Component
 public class LMSAnnouncementService implements AnnouncementService {
 
-    @Autowired
     private CourseRepository courseRepository;
 
-    @Autowired
     private AnnouncementRepository announcementRepository;
 
+    @Autowired
+    public LMSAnnouncementService(CourseRepository courseRepository, AnnouncementRepository announcementRepository) {
+        this.courseRepository = courseRepository;
+        this.announcementRepository = announcementRepository;
+    }
+
     @Override
-    public AddAnnouncementResponse addAnnouncement(Announcement announcement) {
+    public ResponseEntity addAnnouncement(Announcement announcement) {
 
-        // check requested data is present or not
-        if(announcement.getCourseId() != null && announcement.getTitle() != null && announcement.getContent() != null) {
-            // check if the course is exists or not
-            if(courseRepository.findById(announcement.getCourseId()) != null) {
-                // need to implement email sending functionality
-
-                // add announcement to the database
-                announcementRepository.save(announcement);
-                return new AddAnnouncementResponse(true);
-            } else {
-                return new AddAnnouncementResponse(false);
+        try {
+            // check requested data is received or not
+            if(announcement.getCourseId() == null || announcement.getTitle() == null
+                    || announcement.getContent() == null) {
+                throw new DataMissingException("Input Data missing");
             }
 
-        } else {
-            return new AddAnnouncementResponse(false);
+            // check if the announcement is already exists or not
+            if(announcementRepository.findByCourseIdAndTitle(announcement.getCourseId(), announcement.getTitle()) != null) {
+                throw new AnnouncementAddingFailureException("Announcement already exists");
+            }
+
+            // add announcement to the database
+            announcementRepository.save(announcement);
+
+            return ResponseEntity.ok().build();
+
+        } catch (DataMissingException | AnnouncementAddingFailureException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
         }
     }
 
