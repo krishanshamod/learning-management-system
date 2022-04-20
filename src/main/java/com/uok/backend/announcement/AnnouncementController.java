@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping(path = "announcement")
 public class AnnouncementController {
@@ -22,8 +20,8 @@ public class AnnouncementController {
         return announcementService.addAnnouncement(announcement);
     }
 
-    @GetMapping("/getannouncements/{courseId}")
-    public List<Announcement> getAnnouncementsForACourse(@PathVariable String courseId) {
-        return announcementService.getAnnouncementsForACourse(courseId);
+    @PostMapping("getannouncements")
+    public ResponseEntity getAnnouncementsForACourse(@RequestBody GetAnnouncementRequest getAnnouncementRequest) {
+        return announcementService.getAnnouncementsForACourse(getAnnouncementRequest);
     }
 }

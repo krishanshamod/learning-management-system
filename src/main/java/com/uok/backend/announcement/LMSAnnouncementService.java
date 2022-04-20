@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class LMSAnnouncementService implements AnnouncementService {
 
@@ -49,7 +47,19 @@ public class LMSAnnouncementService implements AnnouncementService {
     }
 
     @Override
-    public List<Announcement> getAnnouncementsForACourse(String CourseId) {
-        return announcementRepository.findByCourseId(CourseId);
+    public ResponseEntity getAnnouncementsForACourse(GetAnnouncementRequest getAnnouncementRequest) {
+
+        try {
+            // check all the data received or not
+            if (getAnnouncementRequest.getCourseId() == null) {
+                throw new DataMissingException("Course Id is missing");
+            }
+
+            return ResponseEntity.ok(announcementRepository.findByCourseId(getAnnouncementRequest.getCourseId()));
+
+        } catch (DataMissingException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
