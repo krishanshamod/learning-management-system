@@ -13,6 +13,7 @@ public interface CourseRegistrationRepository extends JpaRepository<CourseRegist
 
     List<CourseRegistration> findAllByUserEmail(String userEmail);
     CourseRegistration findByCourseIdAndUserEmail(String courseId, String userEmail);
+    List<CourseRegistration> findByCourseId(String courseId);
 
     @Modifying
     @Transactional
