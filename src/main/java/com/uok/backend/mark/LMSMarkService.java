@@ -15,10 +15,12 @@ import java.util.Objects;
 @Service
 public class LMSMarkService implements MarkService {
     private final CourseRegistrationRepository courseRegistrationRepository;
+    private final UserService userService;
 
     @Autowired
-    public LMSMarkService(CourseRegistrationRepository courseRegistrationRepository) {
+    public LMSMarkService(CourseRegistrationRepository courseRegistrationRepository, UserService userService) {
         this.courseRegistrationRepository = courseRegistrationRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -32,6 +34,7 @@ public class LMSMarkService implements MarkService {
                 throw new DataMissingException("Input Data Missing");
             }
 
+            // set student marks for the course
             courseRegistrationRepository
                     .findByCourseIdAndUserEmail(addMarksRequest.getCourseId(), addMarksRequest.getStudentEmail())
                     .setMarks(addMarksRequest.getMarks());
@@ -45,12 +48,27 @@ public class LMSMarkService implements MarkService {
     }
 
     @Override
-    public Integer getMarksForACourse(String userEmail, String courseId) {
-//        List<CourseRegistration> courseRegistration = courseRegistrationRepository.findByCourseIdAndUserEmail(courseId, userEmail);
-//        if (courseRegistration.size() == 1) {
-//            return courseRegistration.get(0).getMarks();
-//        }
-        return null;
+    public ResponseEntity getMarksForACourse(GetMarksRequest getMarksRequest) {
+
+        try {
+            // check all data is received or not
+            if (getMarksRequest.getCourseId() == null) {
+                throw new DataMissingException("Course ID is Missing");
+            }
+
+            String studentEmail = userService.getTokenUser().getEmail();
+            String courseId = getMarksRequest.getCourseId();
+
+            // get student marks for the course
+            int marks = courseRegistrationRepository
+                    .findByCourseIdAndUserEmail(courseId, studentEmail).getMarks();
+
+            return ResponseEntity.ok(new GetMarksResponse(studentEmail, courseId, marks));
+
+        } catch (DataMissingException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     //TODO: change this to return a list of courses and marks only

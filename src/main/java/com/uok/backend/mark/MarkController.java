@@ -23,9 +23,9 @@ public class MarkController {
         return markService.addCourseMarks(addMarksRequest);
     }
 
-    @GetMapping("/{userEmail}/{courseId}")
-    public Integer getMarksForCourse(@PathVariable String userEmail, @PathVariable String courseId) {
-        return markService.getMarksForACourse(userEmail , courseId);
+    @PostMapping("getmarks")
+    public ResponseEntity getMarksForCourse(@RequestBody GetMarksRequest getMarksRequest) {
+        return markService.getMarksForACourse(getMarksRequest);
     }
 
     @GetMapping("/{userEmail}")
