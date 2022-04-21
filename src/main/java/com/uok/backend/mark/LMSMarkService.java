@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -95,11 +96,27 @@ public class LMSMarkService implements MarkService {
         }
     }
 
-    //TODO: change this to return a list of courses and marks only
     @Override
-    public List<CourseRegistration> getMarksForUser(String userEmail) {
-        List<CourseRegistration> courseRegistrations = courseRegistrationRepository.findAllByUserEmail(userEmail);
-        courseRegistrations.removeIf(Objects.requireNonNull(courseRegistration -> courseRegistration.getMarks() == null));
-        return courseRegistrations;
+    public ResponseEntity getMarksForUser() {
+
+        String studentEmail = userService.getTokenUser().getEmail();
+
+        // get student marks for all courses
+        List<CourseRegistration> courseRegistrations = courseRegistrationRepository.findAllByUserEmail(studentEmail);
+
+        courseRegistrations.removeIf(Objects.requireNonNull(
+                courseRegistration -> courseRegistration.getMarks() == null));
+
+        // convert student marks to readable format
+        List<GetAllMarksResponse> getAllMarksResponses = new ArrayList<>();
+
+        courseRegistrations.forEach(courseRegistration -> {
+            getAllMarksResponses.add(new GetAllMarksResponse(
+                    courseRegistration.getCourse().getId(),
+                    courseRegistration.getCourse().getName(),
+                    courseRegistration.getMarks()));
+        });
+
+        return ResponseEntity.ok(getAllMarksResponses);
     }
 }
