@@ -12,7 +12,7 @@ import java.util.List;
 public interface CourseRegistrationRepository extends JpaRepository<CourseRegistration, CourseRegistrationId> {
 
     List<CourseRegistration> findAllByUserEmail(String userEmail);
-    List<CourseRegistration> findByCourseIdAndUserEmail(String courseId, String userEmail);
+    CourseRegistration findByCourseIdAndUserEmail(String courseId, String userEmail);
 
     @Modifying
     @Transactional
