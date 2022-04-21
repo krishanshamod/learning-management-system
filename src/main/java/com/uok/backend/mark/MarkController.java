@@ -1,8 +1,8 @@
 package com.uok.backend.mark;
 
-import com.uok.backend.course.CourseService;
 import com.uok.backend.course.registration.CourseRegistration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +18,9 @@ public class MarkController {
         this.markService = markService;
     }
 
-    @PutMapping("/{courseId}/{userEmail}/{mark}")
-    public void addMarks(@PathVariable String courseId, @PathVariable String userEmail, @PathVariable Integer mark) {
-        markService.addCourseMarks(courseId, userEmail, mark);
+    @PostMapping("addmarks")
+    public ResponseEntity addMarks(@RequestBody AddMarksRequest addMarksRequest) {
+        return markService.addCourseMarks(addMarksRequest);
     }
 
     @GetMapping("/{userEmail}/{courseId}")
