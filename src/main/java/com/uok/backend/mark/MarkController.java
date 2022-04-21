@@ -28,6 +28,11 @@ public class MarkController {
         return markService.getMarksForACourse(getMarksRequest);
     }
 
+    @PostMapping("getstudentmarks")
+    public ResponseEntity getStudentMarksForCourse(@RequestBody GetStudentMarksRequest getStudentMarksRequest) {
+        return markService.getStudentMarksForACourse(getStudentMarksRequest);
+    }
+
     @GetMapping("/{userEmail}")
     public List<CourseRegistration> getMarksForUser(@PathVariable String userEmail) {
         return markService.getMarksForUser(userEmail);

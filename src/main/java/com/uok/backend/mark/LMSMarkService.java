@@ -71,6 +71,30 @@ public class LMSMarkService implements MarkService {
         }
     }
 
+    @Override
+    public ResponseEntity getStudentMarksForACourse(GetStudentMarksRequest getStudentMarksRequest) {
+
+        try {
+            // check all data is received or not
+            if (getStudentMarksRequest.getCourseId() == null || getStudentMarksRequest.getStudentEmail() == null) {
+                throw new DataMissingException("Student Email or Course ID is Missing");
+            }
+
+            String studentEmail = getStudentMarksRequest.getStudentEmail();
+            String courseId = getStudentMarksRequest.getCourseId();
+
+            // get student marks for the course
+            int marks = courseRegistrationRepository
+                    .findByCourseIdAndUserEmail(courseId, studentEmail).getMarks();
+
+            return ResponseEntity.ok(new GetMarksResponse(studentEmail, courseId, marks));
+
+        } catch (DataMissingException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     //TODO: change this to return a list of courses and marks only
     @Override
     public List<CourseRegistration> getMarksForUser(String userEmail) {

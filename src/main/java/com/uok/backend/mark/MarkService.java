@@ -9,5 +9,6 @@ import java.util.List;
 public interface MarkService {
     ResponseEntity addCourseMarks(AddMarksRequest addMarksRequest);
     ResponseEntity getMarksForACourse(GetMarksRequest getMarksRequest);
+    ResponseEntity getStudentMarksForACourse(GetStudentMarksRequest getStudentMarksRequest);
     List<CourseRegistration> getMarksForUser(String userEmail);
 }
