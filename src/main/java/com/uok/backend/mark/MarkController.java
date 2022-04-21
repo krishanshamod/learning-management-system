@@ -35,4 +35,9 @@ public class MarkController {
         return markService.getMarksForUser();
     }
 
+    @PostMapping("getenrolledstudents")
+    public ResponseEntity getEnrolledStudents(@RequestBody GetMarksRequest getMarksRequest) {
+        return markService.getEnrolledStudents(getMarksRequest);
+    }
+
 }

@@ -7,4 +7,5 @@ public interface MarkService {
     ResponseEntity getMarksForACourse(GetMarksRequest getMarksRequest);
     ResponseEntity getStudentMarksForACourse(GetStudentMarksRequest getStudentMarksRequest);
     ResponseEntity getMarksForUser();
+    ResponseEntity getEnrolledStudents(GetMarksRequest getMarksRequest);
 }

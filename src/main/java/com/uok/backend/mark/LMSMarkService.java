@@ -3,6 +3,7 @@ package com.uok.backend.mark;
 import com.uok.backend.course.registration.CourseRegistration;
 import com.uok.backend.course.registration.CourseRegistrationRepository;
 import com.uok.backend.exceptions.DataMissingException;
+import com.uok.backend.user.User;
 import com.uok.backend.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -118,5 +119,37 @@ public class LMSMarkService implements MarkService {
         });
 
         return ResponseEntity.ok(getAllMarksResponses);
+    }
+
+    @Override
+    public ResponseEntity getEnrolledStudents(GetMarksRequest getMarksRequest) {
+
+        try {
+            // check all data is received or not
+            if (getMarksRequest.getCourseId() == null) {
+                throw new DataMissingException("Course ID is Missing");
+            }
+
+            // get course enrollments list for the specified course
+            List<CourseRegistration> courseRegistrations = courseRegistrationRepository
+                    .findByCourseId(getMarksRequest.getCourseId());
+
+            // remove the lecturer from the list
+            courseRegistrations.removeIf(Objects.requireNonNull(
+                    courseRegistration -> courseRegistration.getUser().getRole().equals("lecturer")));
+
+            List<User> students = new ArrayList<>();
+
+            // get all students who enrolled to the course
+            courseRegistrations.forEach(courseRegistration -> {
+                students.add(courseRegistration.getUser());
+            });
+
+            return ResponseEntity.ok(students);
+
+        } catch (DataMissingException e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
