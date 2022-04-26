@@ -1,4 +1,4 @@
-package com.uok.backend.Content;
+package com.uok.backend.content;
 
 import org.springframework.http.ResponseEntity;
 

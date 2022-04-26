@@ -1,4 +1,4 @@
-package com.uok.backend.Content;
+package com.uok.backend.content;
 
 public class GetContentRequest {
     private String courseId;
