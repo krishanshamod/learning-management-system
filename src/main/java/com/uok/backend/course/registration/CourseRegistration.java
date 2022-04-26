@@ -54,8 +54,6 @@ public class CourseRegistration {
         this.marks = marks;
     }
 
-    //TODO
-    // should implement the proper method
     public char getGrade() {
         if (marks >= 75 && marks <= 100)
             return 'A';

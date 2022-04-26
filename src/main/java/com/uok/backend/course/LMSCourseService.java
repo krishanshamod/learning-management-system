@@ -3,8 +3,8 @@ package com.uok.backend.course;
 import com.uok.backend.course.registration.CourseRegistrationRepository;
 import com.uok.backend.exceptions.CourseRegistrationException;
 import com.uok.backend.exceptions.DataMissingException;
-import com.uok.backend.user.UserRepository;
 import com.uok.backend.user.UserService;
+import com.uok.backend.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,21 +16,21 @@ import java.util.List;
 public class LMSCourseService implements CourseService {
 
     private final CourseRepository courseRepository;
-    private final UserRepository userRepository;
     private final CourseRegistrationRepository courseRegistrationRepository;
     private final UserService userService;
+    private Logger logger;
 
     @Autowired
     public LMSCourseService (
             CourseRepository courseRepository,
-            UserRepository userRepository,
             CourseRegistrationRepository courseRegistrationRepository,
-            UserService userService
+            UserService userService,
+            Logger logger
     ) {
         this.courseRepository = courseRepository;
-        this.userRepository = userRepository;
         this.courseRegistrationRepository = courseRegistrationRepository;
         this.userService = userService;
+        this.logger = logger;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class LMSCourseService implements CourseService {
                 throw new DataMissingException("Course ID or Course Name is missing");
             }
 
-            // check if course already exists in the database
+            // check course already exists in the database or not
             if (courseRepository.findById(courseData.getId()).isPresent()) {
                 throw new CourseRegistrationException("Course already exists");
             }
@@ -58,14 +58,9 @@ public class LMSCourseService implements CourseService {
 
             return ResponseEntity.ok().build();
 
-        } catch (DataMissingException e) {
-            System.out.println(e.getMessage());
+        } catch (DataMissingException | CourseRegistrationException e) {
+            logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
-
-        } catch (CourseRegistrationException e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.badRequest().build();
-
         }
     }
 
@@ -86,7 +81,7 @@ public class LMSCourseService implements CourseService {
             return ResponseEntity.ok().build();
 
         } catch (DataMissingException e) {
-            System.out.println(e.getMessage());
+            logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
