@@ -1,8 +1,8 @@
 package com.uok.backend.announcement;
 
-import com.uok.backend.course.CourseRepository;
 import com.uok.backend.exceptions.AnnouncementAddingFailureException;
 import com.uok.backend.exceptions.DataMissingException;
+import com.uok.backend.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -10,14 +10,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class LMSAnnouncementService implements AnnouncementService {
 
-    private CourseRepository courseRepository;
-
     private AnnouncementRepository announcementRepository;
+    private Logger logger;
 
     @Autowired
-    public LMSAnnouncementService(CourseRepository courseRepository, AnnouncementRepository announcementRepository) {
-        this.courseRepository = courseRepository;
+    public LMSAnnouncementService(AnnouncementRepository announcementRepository, Logger logger) {
         this.announcementRepository = announcementRepository;
+        this.logger = logger;
     }
 
     @Override
@@ -27,11 +26,14 @@ public class LMSAnnouncementService implements AnnouncementService {
             // check requested data is received or not
             if(announcement.getCourseId() == null || announcement.getTitle() == null
                     || announcement.getContent() == null) {
+
                 throw new DataMissingException("Input Data missing");
             }
 
             // check if the announcement is already exists or not
-            if(announcementRepository.findByCourseIdAndTitle(announcement.getCourseId(), announcement.getTitle()) != null) {
+            if(announcementRepository.findByCourseIdAndTitle(
+                    announcement.getCourseId(), announcement.getTitle()) != null) {
+
                 throw new AnnouncementAddingFailureException("Announcement already exists");
             }
 
@@ -41,7 +43,7 @@ public class LMSAnnouncementService implements AnnouncementService {
             return ResponseEntity.ok().build();
 
         } catch (DataMissingException | AnnouncementAddingFailureException e) {
-            System.out.println(e.getMessage());
+            logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -58,7 +60,7 @@ public class LMSAnnouncementService implements AnnouncementService {
             return ResponseEntity.ok(announcementRepository.findByCourseId(getAnnouncementRequest.getCourseId()));
 
         } catch (DataMissingException e) {
-            System.out.println(e.getMessage());
+            logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

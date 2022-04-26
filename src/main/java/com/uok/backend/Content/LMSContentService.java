@@ -2,6 +2,7 @@ package com.uok.backend.Content;
 
 import com.uok.backend.exceptions.ContentAddingFailureException;
 import com.uok.backend.exceptions.DataMissingException;
+import com.uok.backend.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -10,10 +11,12 @@ import org.springframework.stereotype.Service;
 public class LMSContentService implements ContentService{
 
     private final ContentRepository contentRepository;
+    private Logger logger;
 
     @Autowired
-    public LMSContentService(ContentRepository contentRepository){
+    public LMSContentService(ContentRepository contentRepository, Logger logger) {
         this.contentRepository = contentRepository;
+        this.logger = logger;
     }
 
     @Override
@@ -36,7 +39,7 @@ public class LMSContentService implements ContentService{
             return ResponseEntity.ok().build();
 
         } catch (DataMissingException | ContentAddingFailureException e) {
-            System.out.println(e.getMessage());
+            logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -53,7 +56,7 @@ public class LMSContentService implements ContentService{
             return ResponseEntity.ok(contentRepository.findByCourseId(getContentRequest.getCourseId()));
 
         } catch (DataMissingException e) {
-            System.out.println(e.getMessage());
+            logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

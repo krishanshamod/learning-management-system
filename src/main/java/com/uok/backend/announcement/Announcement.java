@@ -12,11 +12,6 @@ public class Announcement {
     @Column(name = "course_id")
     private String courseId;
 
-    //TODO: should implement foreign key
-//    @OneToOne
-//    @PrimaryKeyJoinColumn(name = "course_id", referencedColumnName = "id")
-//    private Course course;
-
     @Id
     @Column(name = "title")
     private String title;
