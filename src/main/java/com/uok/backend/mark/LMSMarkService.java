@@ -5,6 +5,7 @@ import com.uok.backend.course.registration.CourseRegistrationRepository;
 import com.uok.backend.exceptions.DataMissingException;
 import com.uok.backend.user.User;
 import com.uok.backend.user.UserService;
+import com.uok.backend.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,17 @@ import java.util.Objects;
 public class LMSMarkService implements MarkService {
     private final CourseRegistrationRepository courseRegistrationRepository;
     private final UserService userService;
+    private Logger logger;
 
     @Autowired
-    public LMSMarkService(CourseRegistrationRepository courseRegistrationRepository, UserService userService) {
+    public LMSMarkService(
+            CourseRegistrationRepository courseRegistrationRepository,
+            UserService userService,
+            Logger logger
+    ) {
         this.courseRegistrationRepository = courseRegistrationRepository;
         this.userService = userService;
+        this.logger = logger;
     }
 
     @Override
@@ -44,7 +51,7 @@ public class LMSMarkService implements MarkService {
             return ResponseEntity.ok().build();
 
         } catch (DataMissingException e) {
-            System.out.println(e.getMessage());
+            logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -68,7 +75,7 @@ public class LMSMarkService implements MarkService {
             return ResponseEntity.ok(new GetMarksResponse(studentEmail, courseId, marks));
 
         } catch (DataMissingException e) {
-            System.out.println(e.getMessage());
+            logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -92,7 +99,7 @@ public class LMSMarkService implements MarkService {
             return ResponseEntity.ok(new GetMarksResponse(studentEmail, courseId, marks));
 
         } catch (DataMissingException e) {
-            System.out.println(e.getMessage());
+            logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -148,7 +155,7 @@ public class LMSMarkService implements MarkService {
             return ResponseEntity.ok(students);
 
         } catch (DataMissingException e) {
-            System.out.println(e.getMessage());
+            logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

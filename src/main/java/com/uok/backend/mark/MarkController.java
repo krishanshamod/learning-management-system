@@ -30,7 +30,7 @@ public class MarkController {
         return markService.getStudentMarksForACourse(getStudentMarksRequest);
     }
 
-    @PostMapping("getallmarks")
+    @GetMapping("getallmarks")
     public ResponseEntity getMarksForUser() {
         return markService.getMarksForUser();
     }
