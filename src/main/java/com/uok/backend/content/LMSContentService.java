@@ -4,6 +4,8 @@ import com.uok.backend.exceptions.ContentAddingFailureException;
 import com.uok.backend.exceptions.DataMissingException;
 import com.uok.backend.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,7 @@ public class LMSContentService implements ContentService{
     }
 
     @Override
+    @CacheEvict(cacheNames = {"contentCache"}, key = "#content.courseId")
     public ResponseEntity addContentToACourse(Content content) {
 
         try {
@@ -45,6 +48,7 @@ public class LMSContentService implements ContentService{
     }
 
     @Override
+    @Cacheable(cacheNames = {"contentCache"}, key = "#getContentRequest.courseId")
     public ResponseEntity getContentForACourse(GetContentRequest getContentRequest) {
 
         try {
