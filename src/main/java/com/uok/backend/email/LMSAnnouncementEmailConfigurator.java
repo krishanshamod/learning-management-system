@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AnnouncementEmailConfigurator implements EmailConfigurator{
+public class LMSAnnouncementEmailConfigurator implements EmailConfigurator{
 
-    private AnnouncementEmailAuthenticator authenticator;
+    private LMSAnnouncementEmailAuthenticator authenticator;
 
     @Autowired
-    public AnnouncementEmailConfigurator(AnnouncementEmailAuthenticator authenticator){
+    public LMSAnnouncementEmailConfigurator(LMSAnnouncementEmailAuthenticator authenticator){
         this.authenticator = authenticator;
     }
 

@@ -1,6 +1,5 @@
 package com.uok.backend.announcement;
 
-import com.uok.backend.email.AnnouncementEmailSender;
 import com.uok.backend.email.LMSEmailService;
 import com.uok.backend.exceptions.AnnouncementAddingFailureException;
 import com.uok.backend.exceptions.DataMissingException;

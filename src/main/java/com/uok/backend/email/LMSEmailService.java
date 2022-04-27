@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LMSEmailService {
+public class LMSEmailService implements EmailService{
 
-    private final AnnouncementEmailDataRetriever retriever;
+    private final LMSAnnouncementEmailDataRetriever retriever;
     private final EmailAuthenticator authenticator;
     private final EmailConfigurator configurator;
     private final EmailSender sender;
@@ -16,7 +16,7 @@ public class LMSEmailService {
 
     @Autowired
     public LMSEmailService(
-            AnnouncementEmailDataRetriever retriever,
+            LMSAnnouncementEmailDataRetriever retriever,
             EmailAuthenticator authenticator,
             EmailConfigurator configurator,
             EmailSender sender
@@ -29,8 +29,8 @@ public class LMSEmailService {
 
     public void sendAnnouncemetEmail() {
         Email emailData = retriever.getEmailData();
-        HttpRequestWithBody authenticatedRequest = authenticator.authenticateEmail();
-        HttpRequestWithBody request = configurator.configureEmail(authenticatedRequest, emailData);
-        sender.sendEmail(request);
+        HttpRequestWithBody authenticatedEmailRequest = authenticator.authenticateEmail();
+        HttpRequestWithBody finalEmailrequest = configurator.configureEmail(authenticatedEmailRequest, emailData);
+        sender.sendEmail(finalEmailrequest);
     }
 }
