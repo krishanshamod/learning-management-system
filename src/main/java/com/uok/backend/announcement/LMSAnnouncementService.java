@@ -1,6 +1,7 @@
 package com.uok.backend.announcement;
 
-import com.uok.backend.email.EmailSender;
+import com.uok.backend.email.AnnouncementEmailSender;
+import com.uok.backend.email.LMSEmailService;
 import com.uok.backend.exceptions.AnnouncementAddingFailureException;
 import com.uok.backend.exceptions.DataMissingException;
 import com.uok.backend.utils.Logger;
@@ -15,13 +16,13 @@ public class LMSAnnouncementService implements AnnouncementService {
 
     private AnnouncementRepository announcementRepository;
     private Logger logger;
-    private EmailSender emailSender;
+    private LMSEmailService lmsEmailService;
 
     @Autowired
-    public LMSAnnouncementService(AnnouncementRepository announcementRepository, Logger logger, EmailSender emailSender) {
+    public LMSAnnouncementService(AnnouncementRepository announcementRepository, Logger logger, LMSEmailService lmsEmailService) {
         this.announcementRepository = announcementRepository;
         this.logger = logger;
-        this.emailSender = emailSender;
+        this.lmsEmailService = lmsEmailService;
     }
 
     @Override
@@ -29,7 +30,7 @@ public class LMSAnnouncementService implements AnnouncementService {
     public ResponseEntity addAnnouncement(Announcement announcement) {
 
         // FIXME; for testing only
-        emailSender.sendEmail();
+        lmsEmailService.sendAnnouncemetEmail();
 
         try {
             // check requested data is received or not
