@@ -1,38 +1,35 @@
 package com.uok.backend.email;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mashape.unirest.request.HttpRequestWithBody;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-@Component
+
+
 public class Email {
-    @Value("${mailgun.api.key}")
-    public String apiKey;
-    @Value("${mailgun.domain}")
-    public String domainName;
 
-    public void sendSimpleMessage() {
-        try {
-            HttpResponse<JsonNode>  request = Unirest.post("https://api.mailgun.net/v3/" + domainName + "/messages")
-                .basicAuth("api", apiKey)
-                .queryString("from", "Excited User <USER@YOURDOMAIN.COM>")
-                .queryString("to", "pj799571@gmail.com")
-                .queryString("subject", "hello")
-                .queryString("text", "testing")
-                .asJson();
-        }
-        catch (UnirestException e) {
-            e.printStackTrace();
-        }
+    private final String from;
+    private final String to;
+    private final String subject;
+    private final String body;
 
-
+    public Email(String from, String to, String subject, String body) {
+        this.from = from;
+        this.to = to;
+        this.subject = subject;
+        this.body = body;
     }
 
+    public String getFrom() {
+        return from;
+    }
 
+    public String getTo() {
+        return to;
+    }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public String getBody() {
+        return body;
+    }
 }
