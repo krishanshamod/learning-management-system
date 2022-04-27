@@ -3,6 +3,7 @@ package com.uok.backend.user;
 import com.uok.backend.security.JwtRequestFilter;
 import com.uok.backend.security.TokenValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ public class LMSUserService implements UserService {
     }
 
     @Override
+    @Cacheable(cacheNames = {"userCache"}, key = "#root.target.getTokenUser().getEmail()")
     public ResponseEntity getUser() {
         return ResponseEntity.ok(getTokenUser());
     }
