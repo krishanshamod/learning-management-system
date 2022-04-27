@@ -4,6 +4,7 @@ import com.uok.backend.exceptions.AnnouncementAddingFailureException;
 import com.uok.backend.exceptions.DataMissingException;
 import com.uok.backend.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +50,7 @@ public class LMSAnnouncementService implements AnnouncementService {
     }
 
     @Override
+    @Cacheable(cacheNames = {"announcementCache"}, key = "#getAnnouncementRequest.courseId")
     public ResponseEntity getAnnouncementsForACourse(GetAnnouncementRequest getAnnouncementRequest) {
 
         try {
