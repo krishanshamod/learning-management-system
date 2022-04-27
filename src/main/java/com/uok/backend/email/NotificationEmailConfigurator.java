@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class NotificationEmailConfigurator {
-    @Value("${mailgun.api.key}")
-    private String apiKey;
-    @Value("${mailgun.domain}")
-    private String domainName;
+
+    private NotificationEmailAuthenticator authenticator;
 
     private Email emailData;
 
-    public NotificationEmailConfigurator(){
+    @Autowired
+    public NotificationEmailConfigurator(NotificationEmailAuthenticator authenticator){
+        this.authenticator = authenticator;
         this.emailData = new Email(
                 "Excited User <USER@YOURDOMAIN.COM>",
                 "pj799571@gmail.com",
@@ -26,8 +26,8 @@ public class NotificationEmailConfigurator {
     }
 
     public HttpRequestWithBody configureEmail() {
-        HttpRequestWithBody request = Unirest.post("https://api.mailgun.net/v3/" + domainName + "/messages")
-                .basicAuth("api", apiKey)
+        HttpRequestWithBody request = authenticator.authenticateEmail();
+        request
                 .queryString("from", emailData.getFrom())
                 .queryString("to", emailData.getTo())
                 .queryString("subject", emailData.getSubject())
