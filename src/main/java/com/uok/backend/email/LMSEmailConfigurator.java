@@ -7,19 +7,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class LMSEmailConfigurator implements EmailConfigurator{
 
-    private LMSEmailAuthenticator authenticator;
+    private EmailAuthenticator authenticator;
 
     @Autowired
-    public LMSEmailConfigurator(LMSEmailAuthenticator authenticator){
+    public LMSEmailConfigurator(EmailAuthenticator authenticator){
         this.authenticator = authenticator;
     }
 
     public HttpRequestWithBody configureEmail(HttpRequestWithBody authenticatedEmailRequest, Email emailData) {
-        HttpRequestWithBody request = authenticatedEmailRequest
+        return authenticatedEmailRequest
                 .queryString("from", emailData.getFrom())
                 .queryString("to", emailData.getTo())
                 .queryString("subject", emailData.getSubject())
                 .queryString("text", emailData.getBody());
-        return request;
     }
 }

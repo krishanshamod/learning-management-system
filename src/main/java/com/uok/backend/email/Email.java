@@ -2,6 +2,8 @@ package com.uok.backend.email;
 
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 
 public class Email {
 

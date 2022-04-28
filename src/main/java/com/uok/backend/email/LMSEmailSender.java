@@ -11,6 +11,7 @@ public class LMSEmailSender implements EmailSender{
     //fixme handle exceptions properly
     public void sendEmail(HttpRequestWithBody configuredEmailRequest) {
         try {
+            //fixme response is not used
             HttpResponse<JsonNode> response = configuredEmailRequest.asJson();
         }
         catch (UnirestException e) {
