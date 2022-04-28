@@ -1,5 +1,6 @@
 package com.uok.backend.announcement;
 
+import com.uok.backend.email.LMSEmailService;
 import com.uok.backend.exceptions.AnnouncementAddingFailureException;
 import com.uok.backend.exceptions.DataMissingException;
 import com.uok.backend.utils.Logger;
@@ -24,6 +25,7 @@ public class LMSAnnouncementService implements AnnouncementService {
     @Override
     @CacheEvict(cacheNames = {"announcementCache"}, key = "#announcement.courseId")
     public ResponseEntity addAnnouncement(Announcement announcement) {
+
 
         try {
             // check requested data is received or not
