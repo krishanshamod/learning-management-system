@@ -6,43 +6,42 @@ import com.uok.backend.mark.GetMarksRequest;
 import com.uok.backend.mark.MarkService;
 import com.uok.backend.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class LMSEmailDataRetriever {
-    // FIXME: implement interface EmailDataRetriever
+public class LMSEmailDataRetriever implements EmailDataRetriever {
 
-    private AnnouncementService announcementService;
-    private MarkService markService;
+    private final Environment env;
+    private final String fromAddress;
+    private final MarkService markService;
+
 
     @Autowired
-    public LMSEmailDataRetriever(AnnouncementService announcementService, MarkService markService) {
-        this.announcementService = announcementService;
+    public LMSEmailDataRetriever(Environment env, MarkService markService) {
+        this.env = env;
+        this.fromAddress = env.getProperty("email.sending.domain");
         this.markService = markService;
     }
 
 
     public Email getEmailData(Announcement announcement) {
-        ResponseEntity users = markService.getEnrolledStudents(new GetMarksRequest(announcement.getCourseId()));
-        List<User> userList = (List<User>) users.getBody();
-        ArrayList<String> emails = new ArrayList<>();
-        for(User user : userList) {
-            emails.add(user.getEmail());
+        //fixme : use consistent methods
+        List<User> userList = (List<User>) markService.getEnrolledStudents(new GetMarksRequest(announcement.getCourseId())).getBody();
+
+        StringBuilder emailList = new StringBuilder();
+
+        for (User user : userList) {
+            emailList.append(user.getEmail()).append(",");
         }
 
-        System.out.println(Arrays.toString(emails.toArray()));
         return new Email(
-                "leanSpire <learnspire.info@t8.com>",
-                        "pj799571@gmail.com,jayaward-se18021@stu.kln.ac.lk",
+                fromAddress,
+                emailList.toString(),
                 announcement.getCourseId() + announcement.getTitle(),
                 announcement.getContent()
         );
     }
-
-
 }
