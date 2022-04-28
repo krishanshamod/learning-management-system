@@ -28,21 +28,20 @@ public class LMSEmailDataRetriever {
 
 
     public Email getEmailData(Announcement announcement) {
-        ResponseEntity users = markService.getEnrolledStudents(new GetMarksRequest(announcement.getCourseId()));
-        List<User> userList = (List<User>) users.getBody();
-        ArrayList<String> emails = new ArrayList<>();
+        //fixme : use consistent methods
+        List<User> userList =(List<User>) markService.getEnrolledStudents(new GetMarksRequest(announcement.getCourseId())).getBody();
+
+        StringBuilder emailList = new StringBuilder("");
+
         for(User user : userList) {
-            emails.add(user.getEmail());
+            emailList.append(user.getEmail()).append(",");
         }
 
-        System.out.println(Arrays.toString(emails.toArray()));
         return new Email(
                 "leanSpire <learnspire.info@t8.com>",
-                        "pj799571@gmail.com,jayaward-se18021@stu.kln.ac.lk",
+                emailList.toString(),
                 announcement.getCourseId() + announcement.getTitle(),
                 announcement.getContent()
         );
     }
-
-
 }

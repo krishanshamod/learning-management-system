@@ -20,7 +20,7 @@ public class AnnouncementController {
 
     @PostMapping("addannouncement")
     public ResponseEntity addAnnouncement(@RequestBody Announcement announcement) {
-        emailService.sendAnnouncemetEmail(announcement);
+        emailService.sendAnnouncementEmail(announcement);
         return announcementService.addAnnouncement(announcement);
     }
 

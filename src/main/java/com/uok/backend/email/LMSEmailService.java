@@ -30,7 +30,7 @@ public class LMSEmailService implements EmailService{
         this.sender = sender;
     }
 
-    public void sendAnnouncemetEmail(Announcement announcement) {
+    public void sendAnnouncementEmail(Announcement announcement) {
         Email emailData = retriever.getEmailData(announcement);
         HttpRequestWithBody authenticatedEmailRequest = authenticator.authenticateEmail();
         HttpRequestWithBody configuredEmailRequest = configurator.configureEmail(authenticatedEmailRequest, emailData);
