@@ -15,21 +15,17 @@ public class LMSAnnouncementService implements AnnouncementService {
 
     private AnnouncementRepository announcementRepository;
     private Logger logger;
-    private LMSEmailService lmsEmailService;
 
     @Autowired
-    public LMSAnnouncementService(AnnouncementRepository announcementRepository, Logger logger, LMSEmailService lmsEmailService) {
+    public LMSAnnouncementService(AnnouncementRepository announcementRepository, Logger logger) {
         this.announcementRepository = announcementRepository;
         this.logger = logger;
-        this.lmsEmailService = lmsEmailService;
     }
 
     @Override
     @CacheEvict(cacheNames = {"announcementCache"}, key = "#announcement.courseId")
     public ResponseEntity addAnnouncement(Announcement announcement) {
 
-        // FIXME; for testing only
-        lmsEmailService.sendAnnouncemetEmail();
 
         try {
             // check requested data is received or not
