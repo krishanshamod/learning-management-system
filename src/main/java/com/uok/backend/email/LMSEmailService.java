@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LMSEmailService implements EmailService{
 
-    private final LMSAnnouncementEmailDataRetriever retriever;
+    private final LMSEmailDataRetriever retriever;
     private final EmailAuthenticator authenticator;
     private final EmailConfigurator configurator;
     private final EmailSender sender;
@@ -16,7 +16,7 @@ public class LMSEmailService implements EmailService{
 
     @Autowired
     public LMSEmailService(
-            LMSAnnouncementEmailDataRetriever retriever,
+            LMSEmailDataRetriever retriever,
             EmailAuthenticator authenticator,
             EmailConfigurator configurator,
             EmailSender sender

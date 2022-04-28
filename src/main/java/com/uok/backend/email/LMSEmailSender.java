@@ -7,7 +7,7 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LMSAnnouncementEmailSender implements EmailSender{
+public class LMSEmailSender implements EmailSender{
     //fixme handle exceptions properly
     public void sendEmail(HttpRequestWithBody configuredEmailRequest) {
         try {

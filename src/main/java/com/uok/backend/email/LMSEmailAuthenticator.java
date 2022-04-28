@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LMSAnnouncementEmailAuthenticator implements EmailAuthenticator{
+public class LMSEmailAuthenticator implements EmailAuthenticator{
 
     @Value("${mailgun.api.key}")
     private String apiKey;
