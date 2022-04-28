@@ -3,16 +3,15 @@ package com.uok.backend.email;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.HttpRequestWithBody;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LMSEmailAuthenticator implements EmailAuthenticator{
+public class LMSEmailAuthenticator implements EmailAuthenticator {
 
-    private Environment env;
-    private String apiKey;
-    private String domainName;
+    private final Environment env;
+    private final String apiKey;
+    private final String domainName;
 
     @Autowired
     public LMSEmailAuthenticator(Environment env) {

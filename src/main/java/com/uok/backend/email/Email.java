@@ -1,37 +1,32 @@
 package com.uok.backend.email;
 
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-
-
 public class Email {
 
-    private final String from;
-    private final String to;
-    private final String subject;
-    private final String body;
+    private final String fromAddress;
+    private final String toAddress;
+    private final String emailSubject;
+    private final String emailBody;
 
-    public Email(String from, String to, String subject, String body) {
-        this.from = from;
-        this.to = to;
-        this.subject = subject;
-        this.body = body;
+    public Email(String fromAddress, String toAddress, String emailSubject, String emailBody) {
+        this.fromAddress = fromAddress;
+        this.toAddress = toAddress;
+        this.emailSubject = emailSubject;
+        this.emailBody = emailBody;
     }
 
-    public String getFrom() {
-        return from;
+    public String getFromAddress() {
+        return fromAddress;
     }
 
-    public String getTo() {
-        return to;
+    public String getToAddress() {
+        return toAddress;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getEmailSubject() {
+        return emailSubject;
     }
 
-    public String getBody() {
-        return body;
+    public String getEmailBody() {
+        return emailBody;
     }
 }

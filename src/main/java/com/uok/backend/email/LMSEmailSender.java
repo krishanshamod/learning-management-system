@@ -7,14 +7,13 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LMSEmailSender implements EmailSender{
+public class LMSEmailSender implements EmailSender {
     //fixme handle exceptions properly
     public void sendEmail(HttpRequestWithBody configuredEmailRequest) {
         try {
             //fixme response is not used
             HttpResponse<JsonNode> response = configuredEmailRequest.asJson();
-        }
-        catch (UnirestException e) {
+        } catch (UnirestException e) {
             e.printStackTrace();
         }
     }
