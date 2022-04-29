@@ -1,4 +1,4 @@
-package com.uok.backend.email;
+package com.uok.backend.announcement.email;
 
 import com.uok.backend.announcement.Announcement;
 

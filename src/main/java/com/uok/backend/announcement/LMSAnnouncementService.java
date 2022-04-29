@@ -1,6 +1,6 @@
 package com.uok.backend.announcement;
 
-import com.uok.backend.email.LMSEmailService;
+import com.uok.backend.announcement.email.EmailService;
 import com.uok.backend.exceptions.AnnouncementAddingFailureException;
 import com.uok.backend.exceptions.DataMissingException;
 import com.uok.backend.utils.Logger;
@@ -15,11 +15,17 @@ public class LMSAnnouncementService implements AnnouncementService {
 
     private AnnouncementRepository announcementRepository;
     private Logger logger;
+    private EmailService emailService;
 
     @Autowired
-    public LMSAnnouncementService(AnnouncementRepository announcementRepository, Logger logger) {
+    public LMSAnnouncementService(
+            AnnouncementRepository announcementRepository,
+            Logger logger,
+            EmailService emailService
+    ) {
         this.announcementRepository = announcementRepository;
         this.logger = logger;
+        this.emailService = emailService;
     }
 
     @Override
@@ -41,6 +47,9 @@ public class LMSAnnouncementService implements AnnouncementService {
 
                 throw new AnnouncementAddingFailureException("Announcement already exists");
             }
+
+            // email the announcement to the enrolled students
+            emailService.sendAnnouncementEmail(announcement);
 
             // add announcement to the database
             announcementRepository.save(announcement);

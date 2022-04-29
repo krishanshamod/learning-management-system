@@ -1,9 +1,6 @@
 package com.uok.backend.email;
 
 import com.uok.backend.announcement.Announcement;
-import com.uok.backend.announcement.AnnouncementService;
-import com.uok.backend.mark.GetMarksRequest;
-import com.uok.backend.mark.MarkService;
 import com.uok.backend.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -16,20 +13,14 @@ public class LMSEmailDataRetriever implements EmailDataRetriever {
 
     private final Environment env;
     private final String fromAddress;
-    private final MarkService markService;
-
 
     @Autowired
-    public LMSEmailDataRetriever(Environment env, MarkService markService) {
+    public LMSEmailDataRetriever(Environment env) {
         this.env = env;
         this.fromAddress = env.getProperty("email.sending.domain");
-        this.markService = markService;
     }
 
-
-    public Email getEmailData(Announcement announcement) {
-        //fixme : use consistent methods
-        List<User> userList = (List<User>) markService.getEnrolledStudents(new GetMarksRequest(announcement.getCourseId())).getBody();
+    public Email getEmailData(List<User> userList, Announcement announcement) {
 
         StringBuilder emailList = new StringBuilder();
 
