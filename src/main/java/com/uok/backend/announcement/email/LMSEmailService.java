@@ -18,7 +18,6 @@ import java.util.List;
 @Service
 public class LMSEmailService implements EmailService {
 
-    private final MarkService markService;
     private final EmailDataRetriever retriever;
     private final EmailAuthenticator authenticator;
     private final EmailConfigurator configurator;
@@ -27,22 +26,17 @@ public class LMSEmailService implements EmailService {
     public LMSEmailService(
             EmailDataRetriever retriever,
             EmailAuthenticator authenticator,
-            EmailConfigurator configurator,
-            MarkService markService
+            EmailConfigurator configurator
     ) {
         this.retriever = retriever;
         this.authenticator = authenticator;
         this.configurator = configurator;
-        this.markService = markService;
     }
 
     public void sendAnnouncementEmail(Announcement announcement) {
 
-        // get users who enrolled in the course
-        List<User> userList = (List<User>) markService.getEnrolledStudents(new GetMarksRequest(announcement.getCourseId())).getBody();
-
-        // convert data to email data
-        Email emailData = retriever.getEmailData(userList, announcement);
+        // get email data
+        Email emailData = retriever.getEmailData(announcement);
 
         HttpRequestWithBody authenticatedEmailRequest = authenticator.authenticateEmail();
         HttpRequestWithBody configuredEmailRequest = configurator.configureEmail(authenticatedEmailRequest, emailData);
