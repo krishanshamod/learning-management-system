@@ -32,7 +32,6 @@ public class LMSAnnouncementService implements AnnouncementService {
     @CacheEvict(cacheNames = {"announcementCache"}, key = "#announcement.courseId")
     public ResponseEntity addAnnouncement(Announcement announcement) {
 
-
         try {
             // check requested data is received or not
             if(announcement.getCourseId() == null || announcement.getTitle() == null
@@ -56,7 +55,7 @@ public class LMSAnnouncementService implements AnnouncementService {
 
             return ResponseEntity.ok().build();
 
-        } catch (DataMissingException | AnnouncementAddingFailureException e) {
+        } catch (DataMissingException | AnnouncementAddingFailureException | RuntimeException e) {
             logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
