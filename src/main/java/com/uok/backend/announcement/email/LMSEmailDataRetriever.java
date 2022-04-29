@@ -2,12 +2,11 @@ package com.uok.backend.announcement.email;
 
 import com.uok.backend.announcement.Announcement;
 import com.uok.backend.course.CourseRepository;
+import com.uok.backend.course.registration.CourseRegistration;
+import com.uok.backend.course.registration.CourseRegistrationRepository;
 import com.uok.backend.email.Email;
-import com.uok.backend.mark.GetMarksRequest;
-import com.uok.backend.mark.MarkService;
 import com.uok.backend.security.JwtRequestFilter;
 import com.uok.backend.security.TokenValidator;
-import com.uok.backend.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -20,33 +19,34 @@ public class LMSEmailDataRetriever implements EmailDataRetriever {
     private final Environment env;
     private final String fromAddress;
     private final CourseRepository courseRepository;
-    private final MarkService markService;
     private final TokenValidator tokenValidator;
+    private final CourseRegistrationRepository courseRegistrationRepository;
 
     @Autowired
     public LMSEmailDataRetriever(
             Environment env,
             CourseRepository courseRepository,
-            MarkService markService,
-            TokenValidator tokenValidator
+            TokenValidator tokenValidator,
+            CourseRegistrationRepository courseRegistrationRepository
     ) {
         this.env = env;
         this.fromAddress = env.getProperty("email.sending.domain");
         this.courseRepository = courseRepository;
-        this.markService = markService;
         this.tokenValidator = tokenValidator;
+        this.courseRegistrationRepository = courseRegistrationRepository;
     }
 
     public Email getEmailData(Announcement announcement) {
 
-        // get users who enrolled in the course
-        List<User> userList = (List<User>) markService.getEnrolledStudents(new GetMarksRequest(announcement.getCourseId())).getBody();
+        // get course registration in that course
+        List<CourseRegistration> courseRegistrations = courseRegistrationRepository
+                .findByCourseId(announcement.getCourseId());
 
         // convert users list as a string
         StringBuilder emailList = new StringBuilder();
 
-        for (User user : userList) {
-            emailList.append(user.getEmail()).append(",");
+        for (CourseRegistration courseRegistration : courseRegistrations) {
+            emailList.append(courseRegistration.getUser().getEmail()).append(",");
         }
 
         // get course name
