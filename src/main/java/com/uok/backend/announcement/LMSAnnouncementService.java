@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class LMSAnnouncementService implements AnnouncementService {
 
-    private AnnouncementRepository announcementRepository;
-    private Logger logger;
-    private EmailService emailService;
+    private final AnnouncementRepository announcementRepository;
+    private final Logger logger;
+    private final EmailService emailService;
 
     @Autowired
     public LMSAnnouncementService(
@@ -48,14 +48,15 @@ public class LMSAnnouncementService implements AnnouncementService {
             }
 
             // email the announcement to the enrolled students
-            emailService.sendAnnouncementEmail(announcement);
+            emailService.setAnnouncement(announcement);
+            new Thread(emailService).start();
 
             // add announcement to the database
             announcementRepository.save(announcement);
 
             return ResponseEntity.ok().build();
 
-        } catch (DataMissingException | AnnouncementAddingFailureException | RuntimeException e) {
+        } catch (DataMissingException | AnnouncementAddingFailureException e) {
             logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
