@@ -102,14 +102,15 @@ public class LMSAnnouncementService implements AnnouncementService {
     public ResponseEntity getNotificationsForAUser() {
 
         String email = userService.getTokenUser().getEmail();
-        List<CourseRegistration> registrations = courseRegistrationRepository.findAllByUserEmail(email);
-        List<GetNotificationsResponse> notifications = new ArrayList<>();
-        for (CourseRegistration registration : registrations) {
 
+        List<CourseRegistration> registrations = courseRegistrationRepository.findAllByUserEmail(email);
+
+        List<GetNotificationsResponse> notifications = new ArrayList<>();
+
+        for (CourseRegistration registration : registrations) {
             announcementRepository.findByCourseId(registration.getCourse().getId())
                     .forEach(announcement -> notifications.add(new GetNotificationsResponse(
-                            //fixme fix this to get course name
-                            announcement.getCourseId(),
+                            registration.getCourse().getName(),
                             announcement.getTitle(),
                             announcement.getContent()
                     )));
