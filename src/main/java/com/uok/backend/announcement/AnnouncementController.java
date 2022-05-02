@@ -1,6 +1,7 @@
 package com.uok.backend.announcement;
 
 import com.uok.backend.announcement.email.EmailService;
+import com.uok.backend.course.CourseEnrollRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,5 +25,11 @@ public class AnnouncementController {
     @PostMapping("getannouncements")
     public ResponseEntity getAnnouncementsForACourse(@RequestBody GetAnnouncementRequest getAnnouncementRequest) {
         return announcementService.getAnnouncementsForACourse(getAnnouncementRequest);
+    }
+
+    //fixme new lines
+    @GetMapping("getnotifications")
+    public ResponseEntity getNotificationsForAUser() {
+        return announcementService.getNotificationsForAUser();
     }
 }

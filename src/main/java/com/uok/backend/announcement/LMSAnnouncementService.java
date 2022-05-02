@@ -1,8 +1,13 @@
 package com.uok.backend.announcement;
 
 import com.uok.backend.announcement.email.EmailService;
+import com.uok.backend.course.Course;
+import com.uok.backend.course.GetCourseResponse;
+import com.uok.backend.course.registration.CourseRegistration;
+import com.uok.backend.course.registration.CourseRegistrationRepository;
 import com.uok.backend.exceptions.AnnouncementAddingFailureException;
 import com.uok.backend.exceptions.DataMissingException;
+import com.uok.backend.user.UserService;
 import com.uok.backend.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -10,22 +15,33 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class LMSAnnouncementService implements AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
+    //fixme following parameter is new
+    private final CourseRegistrationRepository courseRegistrationRepository;
     private final Logger logger;
     private final EmailService emailService;
+    //fixme folowing parameter is new
+    private final UserService userService;
 
     @Autowired
     public LMSAnnouncementService(
             AnnouncementRepository announcementRepository,
+            CourseRegistrationRepository courseRegistrationRepository,
             Logger logger,
-            EmailService emailService
+            EmailService emailService,
+            UserService userService
     ) {
         this.announcementRepository = announcementRepository;
+        this.courseRegistrationRepository = courseRegistrationRepository;
         this.logger = logger;
         this.emailService = emailService;
+        this.userService = userService;
     }
 
     @Override
@@ -78,5 +94,27 @@ public class LMSAnnouncementService implements AnnouncementService {
             logger.logException(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    //fixme new lines
+    //Todo add caching
+    @Override
+    public ResponseEntity getNotificationsForAUser() {
+
+        String email = userService.getTokenUser().getEmail();
+        List<CourseRegistration> registrations = courseRegistrationRepository.findAllByUserEmail(email);
+        List<GetNotificationsResponse> notifications = new ArrayList<>();
+        for (CourseRegistration registration : registrations) {
+
+            announcementRepository.findByCourseId(registration.getCourse().getId())
+                    .forEach(announcement -> notifications.add(new GetNotificationsResponse(
+                            //fixme fix this to get course name
+                            announcement.getCourseId(),
+                            announcement.getTitle(),
+                            announcement.getContent()
+                    )));
+        }
+        return ResponseEntity.ok(notifications);
+
     }
 }

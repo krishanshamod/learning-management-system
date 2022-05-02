@@ -8,4 +8,5 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Anno
     List<Announcement> findByCourseId(String courseId);
 
     Announcement findByCourseIdAndTitle(String courseId, String title);
+
 }
