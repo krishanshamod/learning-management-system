@@ -1,18 +1,17 @@
 package com.uok.backend.announcement;
 
-//fixme new class
 public class GetNotificationsResponse {
     private String courseName;
+    private String courseId;
     private String title;
-    private String content;
 
     public GetNotificationsResponse() {
     }
 
-    public GetNotificationsResponse(String courseName, String title, String content) {
+    public GetNotificationsResponse(String courseName, String courseId, String title) {
         this.courseName = courseName;
+        this.courseId = courseId;
         this.title = title;
-        this.content = content;
     }
 
     public String getCourseName() {
@@ -23,19 +22,19 @@ public class GetNotificationsResponse {
         this.courseName = courseName;
     }
 
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 }
