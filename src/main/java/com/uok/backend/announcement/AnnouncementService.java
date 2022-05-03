@@ -7,6 +7,7 @@ public interface AnnouncementService {
 
     ResponseEntity getAnnouncementsForACourse(GetAnnouncementRequest getAnnouncementRequest);
 
-    //fixme new method
+    ResponseEntity getNotification(GetNotificationRequest getNotificationRequest);
+
     ResponseEntity getNotificationsForAUser();
 }

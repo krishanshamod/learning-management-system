@@ -27,7 +27,11 @@ public class AnnouncementController {
         return announcementService.getAnnouncementsForACourse(getAnnouncementRequest);
     }
 
-    //fixme new lines
+    @GetMapping("getnotification")
+    public ResponseEntity getNotification(@RequestBody GetNotificationRequest getNotificationRequest) {
+        return announcementService.getNotification(getNotificationRequest);
+    }
+
     @GetMapping("getnotifications")
     public ResponseEntity getNotificationsForAUser() {
         return announcementService.getNotificationsForAUser();

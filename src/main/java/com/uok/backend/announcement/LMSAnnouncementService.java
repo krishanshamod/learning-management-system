@@ -1,12 +1,11 @@
 package com.uok.backend.announcement;
 
 import com.uok.backend.announcement.email.EmailService;
-import com.uok.backend.course.Course;
-import com.uok.backend.course.GetCourseResponse;
 import com.uok.backend.course.registration.CourseRegistration;
 import com.uok.backend.course.registration.CourseRegistrationRepository;
 import com.uok.backend.exceptions.AnnouncementAddingFailureException;
 import com.uok.backend.exceptions.DataMissingException;
+import com.uok.backend.exceptions.GetNotificationFailureException;
 import com.uok.backend.user.UserService;
 import com.uok.backend.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +21,9 @@ import java.util.List;
 public class LMSAnnouncementService implements AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
-    //fixme following parameter is new
     private final CourseRegistrationRepository courseRegistrationRepository;
     private final Logger logger;
     private final EmailService emailService;
-    //fixme folowing parameter is new
     private final UserService userService;
 
     @Autowired
@@ -96,26 +93,54 @@ public class LMSAnnouncementService implements AnnouncementService {
         }
     }
 
-    //fixme new lines
-    //Todo add caching
+    @Override
+    @Cacheable(cacheNames = {"notificationCache"}, key = "{#getNotificationRequest.courseId, #getNotificationRequest.title}")
+    public ResponseEntity getNotification(GetNotificationRequest getNotificationRequest) {
+
+        try {
+            // check all the data received or not
+            if (getNotificationRequest.getCourseId() == null || getNotificationRequest.getTitle() == null) {
+                throw new DataMissingException("Course Id or Title is missing");
+            }
+
+            // get the announcement
+            Announcement announcement = announcementRepository.findByCourseIdAndTitle(
+                    getNotificationRequest.getCourseId(),
+                    getNotificationRequest.getTitle()
+            );
+
+            // check if the announcement is exists or not
+            if (announcement == null) {
+                throw new GetNotificationFailureException("Announcement not found");
+            }
+
+            return ResponseEntity.ok(announcement);
+
+        } catch (DataMissingException | GetNotificationFailureException e) {
+            logger.logException(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @Override
     public ResponseEntity getNotificationsForAUser() {
 
         String email = userService.getTokenUser().getEmail();
 
+        // get all the courses registered by the user
         List<CourseRegistration> registrations = courseRegistrationRepository.findAllByUserEmail(email);
 
         List<GetNotificationsResponse> notifications = new ArrayList<>();
 
+        // get all the announcements for each course and add to the list
         for (CourseRegistration registration : registrations) {
             announcementRepository.findByCourseId(registration.getCourse().getId())
                     .forEach(announcement -> notifications.add(new GetNotificationsResponse(
                             registration.getCourse().getName(),
-                            announcement.getTitle(),
-                            announcement.getContent()
+                            announcement.getCourseId(),
+                            announcement.getTitle()
                     )));
         }
         return ResponseEntity.ok(notifications);
-
     }
 }
