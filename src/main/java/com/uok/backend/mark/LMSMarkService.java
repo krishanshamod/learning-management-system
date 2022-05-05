@@ -122,7 +122,8 @@ public class LMSMarkService implements MarkService {
             getAllMarksResponses.add(new GetAllMarksResponse(
                     courseRegistration.getCourse().getId(),
                     courseRegistration.getCourse().getName(),
-                    courseRegistration.getMarks()));
+                    courseRegistration.getMarks(),
+                    courseRegistration.getGrade()));
         });
 
         return ResponseEntity.ok(getAllMarksResponses);
