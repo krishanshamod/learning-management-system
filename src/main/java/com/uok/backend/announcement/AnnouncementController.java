@@ -32,7 +32,7 @@ public class AnnouncementController {
         return announcementService.getNotification(getNotificationRequest);
     }
 
-    @PostMapping("getnotifications")
+    @GetMapping("getnotifications")
     public ResponseEntity getNotificationsForAUser() {
         return announcementService.getNotificationsForAUser();
     }
