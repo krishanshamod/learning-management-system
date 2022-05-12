@@ -3,7 +3,6 @@ package com.uok.backend.mark;
 import com.uok.backend.course.registration.CourseRegistration;
 import com.uok.backend.course.registration.CourseRegistrationRepository;
 import com.uok.backend.exceptions.DataMissingException;
-import com.uok.backend.user.User;
 import com.uok.backend.user.UserService;
 import com.uok.backend.utils.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -138,22 +137,31 @@ public class LMSMarkService implements MarkService {
                 throw new DataMissingException("Course ID is Missing");
             }
 
-            // get course enrollments list for the specified course
+            String email = userService.getTokenUser().getEmail();
+
+            List<GetEnrolledStudentsResponse> enrolledStudents = new ArrayList<>();
+
+            // get all enrollment data for that course
             List<CourseRegistration> courseRegistrations = courseRegistrationRepository
                     .findByCourseId(getMarksRequest.getCourseId());
 
-            // remove the lecturer from the list
-            courseRegistrations.removeIf(Objects.requireNonNull(
-                    courseRegistration -> courseRegistration.getUser().getRole().equals("lecturer")));
-
-            List<User> students = new ArrayList<>();
-
-            // get all students who enrolled to the course
+            // add all students with marks to the list
             courseRegistrations.forEach(courseRegistration -> {
-                students.add(courseRegistration.getUser());
+
+                // check if the user is student or lecturer
+                if (!courseRegistration.getUser().getEmail().equals(email)) {
+
+                    // add student to the list
+                    enrolledStudents.add(new GetEnrolledStudentsResponse(
+                            courseRegistration.getUser().getEmail(),
+                            courseRegistration.getUser().getFirstName(),
+                            courseRegistration.getUser().getLastName(),
+                            courseRegistration.getMarks()
+                    ));
+                }
             });
 
-            return ResponseEntity.ok(students);
+            return ResponseEntity.ok(enrolledStudents);
 
         } catch (DataMissingException e) {
             logger.logException(e.getMessage());
