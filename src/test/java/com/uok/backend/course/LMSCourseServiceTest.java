@@ -2,6 +2,7 @@ package com.uok.backend.course;
 
 import com.uok.backend.course.registration.CourseRegistration;
 import com.uok.backend.course.registration.CourseRegistrationRepository;
+import com.uok.backend.exceptions.DataMissingException;
 import com.uok.backend.security.TokenValidator;
 import com.uok.backend.user.LMSUserService;
 import com.uok.backend.user.User;
@@ -20,9 +21,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.net.http.HttpResponse;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -48,7 +53,6 @@ class LMSCourseServiceTest {
 
 
     @Test
-    @Disabled
     void shouldAddNewCourse() {
         //given
         Course course = new Course("cf", "Computer Fundamentals");
@@ -66,15 +70,56 @@ class LMSCourseServiceTest {
 
         ArgumentCaptor<String> emailArgumentCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> courseIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
-
         verify(courseRegistrationRepository).addUserToCourse(emailArgumentCaptor.capture(), courseIdArgumentCaptor.capture());
         String capturedEmail = emailArgumentCaptor.getValue();
         String capturedCourseId = courseIdArgumentCaptor.getValue();
         assertThat(capturedEmail).isEqualTo(user.getEmail());
         assertThat(capturedCourseId).isEqualTo(capturedCourse.getId());
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
+    @Test
+    void shouldThrowWhenCourseIdIsNull() {
+
+        //given
+        Course courseData = new Course(null, "Computer Fundamentals");
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+
+
+        //when
+        when(userService.getTokenUser()).thenReturn(user);
+        ResponseEntity response = underTest.addNewCourse(courseData);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        assertThat(errorMessageCaptor.getValue()).isEqualTo("Course ID or Course Name is missing");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
+    }
+
+    @Test
+    void shouldThrowWhenCourseNameIsNull() {
+
+        //given
+        Course courseData = new Course("cf", null);
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+
+
+        //when
+        when(userService.getTokenUser()).thenReturn(user);
+        ResponseEntity response = underTest.addNewCourse(courseData);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        assertThat(errorMessageCaptor.getValue()).isEqualTo("Course ID or Course Name is missing");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
 
 
     @Test
