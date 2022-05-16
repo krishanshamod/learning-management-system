@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.net.http.HttpResponse;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -116,6 +117,27 @@ class LMSCourseServiceTest {
         ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
         verify(logger).logException(errorMessageCaptor.capture());
         assertThat(errorMessageCaptor.getValue()).isEqualTo("Course ID or Course Name is missing");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldThrowWhenCourseIdIsTaken() {
+
+        //given
+        Course courseData = new Course("cf", "Computer Fundamentals");
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+
+
+        //when
+        when(userService.getTokenUser()).thenReturn(user);
+        when(courseRepository.findById(courseData.getId())).thenReturn(Optional.of(courseData));
+        ResponseEntity response = underTest.addNewCourse(courseData);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        assertThat(errorMessageCaptor.getValue()).isEqualTo("Course already exists");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
