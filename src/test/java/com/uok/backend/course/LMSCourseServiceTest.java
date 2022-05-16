@@ -81,7 +81,7 @@ class LMSCourseServiceTest {
     }
 
     @Test
-    void shouldThrowWhenCourseIdIsNull() {
+    void shouldThrowWhenCourseIdIsNullWhenAddingNewCourse() {
 
         //given
         Course courseData = new Course(null, "Computer Fundamentals");
@@ -169,6 +169,27 @@ class LMSCourseServiceTest {
         assertThat(capturedCourseId).isEqualTo(courseEnrollRequest.getCourseId());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void shouldThrowWhenCourseIdIsNullWhenEnrollingAUser() {
+
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+        CourseEnrollRequest courseEnrollRequest = new CourseEnrollRequest(null);
+
+
+        //when
+        when(userService.getTokenUser()).thenReturn(user);
+        ResponseEntity response = underTest.addUserToCourse(courseEnrollRequest);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Course ID is missing");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
