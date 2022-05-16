@@ -95,7 +95,8 @@ class LMSCourseServiceTest {
         //then
         ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
         verify(logger).logException(errorMessageCaptor.capture());
-        assertThat(errorMessageCaptor.getValue()).isEqualTo("Course ID or Course Name is missing");
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Course ID or Course Name is missing");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
@@ -116,7 +117,8 @@ class LMSCourseServiceTest {
         //then
         ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
         verify(logger).logException(errorMessageCaptor.capture());
-        assertThat(errorMessageCaptor.getValue()).isEqualTo("Course ID or Course Name is missing");
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Course ID or Course Name is missing");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -137,7 +139,8 @@ class LMSCourseServiceTest {
         //then
         ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
         verify(logger).logException(errorMessageCaptor.capture());
-        assertThat(errorMessageCaptor.getValue()).isEqualTo("Course already exists");
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Course already exists");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -145,7 +148,27 @@ class LMSCourseServiceTest {
 
 
     @Test
-    void addUserToCourse() {
+    void shouldAddUserToCourse() {
+
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+        CourseEnrollRequest courseEnrollRequest = new CourseEnrollRequest("cf");
+
+
+        //when
+        when(userService.getTokenUser()).thenReturn(user);
+        ResponseEntity response = underTest.addUserToCourse(courseEnrollRequest);
+
+        //then
+        ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> courseIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(courseRegistrationRepository).addUserToCourse(emailCaptor.capture(), courseIdCaptor.capture());
+        String capturedEmail = emailCaptor.getValue();
+        String capturedCourseId = courseIdCaptor.getValue();
+        assertThat(capturedEmail).isEqualTo(user.getEmail());
+        assertThat(capturedCourseId).isEqualTo(courseEnrollRequest.getCourseId());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
