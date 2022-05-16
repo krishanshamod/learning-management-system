@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.RequestBuilder;
 
 import java.util.Optional;
 
@@ -43,9 +44,9 @@ class LMSUserServiceTest {
 
         //given
         User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
-        given(userRepository.findById(any())).willReturn(Optional.empty());
 
         //when
+        when(userRepository.save(any())).thenReturn(user);
         when(this.tokenValidator.getEmailFromToken((String) any())).thenReturn(user.getEmail());
         when(this.tokenValidator.getFirstNameFromToken((String) any())).thenReturn(user.getFirstName());
         when(this.tokenValidator.getLastNameFromToken((String) any())).thenReturn(user.getLastName());
@@ -57,12 +58,11 @@ class LMSUserServiceTest {
         verify(userRepository).save(userArgumentCaptor.capture());
         User capturedUser = userArgumentCaptor.getValue();
         assertThat(capturedUser).isEqualToComparingFieldByField(user);
-
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
-    void shouldNotAddWhenUserExists() {
+    void shouldNotAddUserWhenExists() {
         //given
         User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
         given(userRepository.findById(any())).willReturn(Optional.of(user));
@@ -72,17 +72,23 @@ class LMSUserServiceTest {
 
         //then
         verify(userRepository, never()).save(any());
-
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test
-    @Disabled
-    void getUser() {
-    }
+    void shouldReturnAUserWhenGetTokenUserCalled() {
 
-    @Test
-    @Disabled
-    void getTokenUser() {
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+
+        //when
+        when(this.tokenValidator.getEmailFromToken((String) any())).thenReturn(user.getEmail());
+        when(this.tokenValidator.getFirstNameFromToken((String) any())).thenReturn(user.getFirstName());
+        when(this.tokenValidator.getLastNameFromToken((String) any())).thenReturn(user.getLastName());
+        when(this.tokenValidator.getRoleFromToken((String) any())).thenReturn(user.getRole());
+
+        //then
+        User actualTokenUser = underTest.getTokenUser();
+        assertThat(actualTokenUser).isEqualToComparingFieldByField(user);
     }
 }
