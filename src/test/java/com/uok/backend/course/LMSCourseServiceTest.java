@@ -22,15 +22,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.net.http.HttpResponse;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = {LMSCourseService.class})
 @ExtendWith(MockitoExtension.class)
@@ -98,6 +97,10 @@ class LMSCourseServiceTest {
         String capturedErrorMessage = errorMessageCaptor.getValue();
         assertThat(capturedErrorMessage).isEqualTo("Course ID or Course Name is missing");
 
+        verify(courseRegistrationRepository, never()).save(any());
+
+        verify(courseRegistrationRepository, never()).addUserToCourse(any(), any());
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
 
     }
@@ -120,6 +123,10 @@ class LMSCourseServiceTest {
         String capturedErrorMessage = errorMessageCaptor.getValue();
         assertThat(capturedErrorMessage).isEqualTo("Course ID or Course Name is missing");
 
+        verify(courseRegistrationRepository, never()).save(any());
+
+        verify(courseRegistrationRepository, never()).addUserToCourse(any(), any());
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -141,6 +148,10 @@ class LMSCourseServiceTest {
         verify(logger).logException(errorMessageCaptor.capture());
         String capturedErrorMessage = errorMessageCaptor.getValue();
         assertThat(capturedErrorMessage).isEqualTo("Course already exists");
+
+        verify(courseRegistrationRepository, never()).save(any());
+
+        verify(courseRegistrationRepository, never()).addUserToCourse(any(), any());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
@@ -189,11 +200,37 @@ class LMSCourseServiceTest {
         String capturedErrorMessage = errorMessageCaptor.getValue();
         assertThat(capturedErrorMessage).isEqualTo("Course ID is missing");
 
+        verify(courseRegistrationRepository, never()).addUserToCourse(any(), any());
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
-    void getEnrolledCourses() {
+    void shouldGetEnrolledCourses() {
+
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+//        Course course = new Course("cf", "Computer Fundamentals");
+//        List<CourseRegistration> courseRegistrations = Arrays.asList(new CourseRegistration(user, course));
+//        courseRegistrations.add(new CourseRegistration(user, course));
+//        GetCourseResponse courseEnrollment = new GetCourseResponse(course.getId(), course.getName());
+
+
+        //when
+        when(userService.getTokenUser()).thenReturn(user);
+//        when(courseRegistrationRepository.findAllByUserEmail(user.getEmail())).thenReturn(courseRegistrations);
+        ResponseEntity response = underTest.getEnrolledCourses();
+
+        //then
+        ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
+        verify(courseRegistrationRepository).findAllByUserEmail(emailCaptor.capture());
+        String capturedEmail = emailCaptor.getValue();
+        assertThat(capturedEmail).isEqualTo(user.getEmail());
+
+//        assertThat(response.getBody()).asList().containsAnyElementsOf(Arrays.asList(courseEnrollment));
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
     }
 
     @Test
