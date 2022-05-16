@@ -46,7 +46,7 @@ class LMSUserServiceTest {
         User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
 
         //when
-        when(userRepository.save(any())).thenReturn(user);
+        when(userRepository.findById(anyString())).thenReturn(Optional.empty());
         when(this.tokenValidator.getEmailFromToken((String) any())).thenReturn(user.getEmail());
         when(this.tokenValidator.getFirstNameFromToken((String) any())).thenReturn(user.getFirstName());
         when(this.tokenValidator.getLastNameFromToken((String) any())).thenReturn(user.getLastName());
