@@ -72,7 +72,7 @@ class LMSMarkServiceTest {
     }
 
     @Test
-    void shouldThrowWhenStudentEmailIsNull() {
+    void shouldThrowWhenStudentEmailIsNullWhenAddingMarksToACourse() {
 
         //given
         AddMarksRequest addMarksRequest = new AddMarksRequest("cf", 70, null);
@@ -92,7 +92,7 @@ class LMSMarkServiceTest {
     }
 
     @Test
-    void shouldThrowWhenCourseIdIsNull() {
+    void shouldThrowWhenCourseIdIsNullWhenAddingMarksToACourse() {
 
         //given
         AddMarksRequest addMarksRequest = new AddMarksRequest(null, 70, "pasandevin@gmail.com");
@@ -112,7 +112,7 @@ class LMSMarkServiceTest {
     }
 
     @Test
-    void shouldThrowWhenMarksAreNotSet() {
+    void shouldThrowWhenMarksAreNotSetWhenAddingMarksToACourse() {
 
         //given
         AddMarksRequest addMarksRequest = new AddMarksRequest("cf", -1, "pasandevin@gmail.com");
@@ -161,7 +161,29 @@ class LMSMarkServiceTest {
         assertThat(result.getMarks()).isEqualTo(courseRegistration.getMarks());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 
+    @Test
+    void shouldThrowWhenCourseIdIsNullWhenGettingMarksForACourse() {
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+        Course course = new Course("cf", "Computer Fundamentals");
+        CourseRegistration courseRegistration = new CourseRegistration(user, course);
+        courseRegistration.setMarks(70);
+        GetMarksRequest getMarksRequest = new GetMarksRequest(null);
+
+        //when
+        ResponseEntity response = underTest.getMarksForACourse(getMarksRequest);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Course ID is Missing");
+
+        verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
