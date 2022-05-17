@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -273,7 +274,81 @@ class LMSMarkServiceTest {
     }
 
     @Test
-    void getMarksForUser() {
+    void shouldGetMarksForUser() {
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+        Course course0 = new Course("cf", "Computer Fundamentals");
+        Course course1 = new Course("mob", "Mobile Development");
+        CourseRegistration courseRegistration0 = new CourseRegistration(user, course0);
+        CourseRegistration courseRegistration1 = new CourseRegistration(user, course1);
+        courseRegistration0.setMarks(70);
+        courseRegistration1.setMarks(90);
+        List<CourseRegistration> courseRegistrations = new ArrayList<>();
+        courseRegistrations.add(courseRegistration0);
+        courseRegistrations.add(courseRegistration1);
+
+        //when
+        when(userService.getTokenUser()).thenReturn(user);
+        when(courseRegistrationRepository.findAllByUserEmail(any())).thenReturn(courseRegistrations);
+        ResponseEntity response = underTest.getMarksForUser();
+
+        //then
+        ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
+        verify(courseRegistrationRepository).findAllByUserEmail(emailCaptor.capture());
+        String email = emailCaptor.getValue();
+        assertThat(email).isEqualTo(user.getEmail());
+
+        Object body = response.getBody();
+        GetAllMarksResponse result0 = ((List<GetAllMarksResponse>) body).get(0);
+        assertThat(result0.getCourseId()).isEqualTo(courseRegistration0.getCourse().getId());
+        assertThat(result0.getCourseName()).isEqualTo(courseRegistration0.getCourse().getName());
+        assertThat(result0.getMarks()).isEqualTo(courseRegistration0.getMarks());
+        assertThat(result0.getGrade()).isEqualTo(courseRegistration0.getGrade());
+
+        GetAllMarksResponse result1 = ((List<GetAllMarksResponse>) body).get(1);
+        assertThat(result1.getCourseId()).isEqualTo(courseRegistration1.getCourse().getId());
+        assertThat(result1.getCourseName()).isEqualTo(courseRegistration1.getCourse().getName());
+        assertThat(result1.getMarks()).isEqualTo(courseRegistration1.getMarks());
+        assertThat(result1.getGrade()).isEqualTo(courseRegistration1.getGrade());
+
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void shouldNotReturnNullMarksWhenGettingMarksForUser() {
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+        Course course0 = new Course("cf", "Computer Fundamentals");
+        Course course1 = new Course("mob", "Mobile Development");
+        CourseRegistration courseRegistration0 = new CourseRegistration(user, course0);
+        CourseRegistration courseRegistration1 = new CourseRegistration(user, course1);
+        courseRegistration0.setMarks(70);
+        List<CourseRegistration> courseRegistrations = new ArrayList<>();
+        courseRegistrations.add(courseRegistration0);
+        courseRegistrations.add(courseRegistration1);
+
+        //when
+        when(userService.getTokenUser()).thenReturn(user);
+        when(courseRegistrationRepository.findAllByUserEmail(any())).thenReturn(courseRegistrations);
+        ResponseEntity response = underTest.getMarksForUser();
+
+        //then
+        ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
+        verify(courseRegistrationRepository).findAllByUserEmail(emailCaptor.capture());
+        String email = emailCaptor.getValue();
+        assertThat(email).isEqualTo(user.getEmail());
+
+        Object body = response.getBody();
+        List<GetAllMarksResponse> actualResponseBody = ((List<GetAllMarksResponse>) body);
+        assertThat(actualResponseBody.size()).isEqualTo(1);
+        GetAllMarksResponse result0 = actualResponseBody.get(0);
+        assertThat(result0.getCourseId()).isEqualTo(courseRegistration0.getCourse().getId());
+        assertThat(result0.getCourseName()).isEqualTo(courseRegistration0.getCourse().getName());
+        assertThat(result0.getMarks()).isEqualTo(courseRegistration0.getMarks());
+        assertThat(result0.getGrade()).isEqualTo(courseRegistration0.getGrade());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
