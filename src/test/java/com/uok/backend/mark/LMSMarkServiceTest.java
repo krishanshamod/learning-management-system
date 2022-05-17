@@ -426,5 +426,24 @@ class LMSMarkServiceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
+    @Test
+    void shouldThrowWhenCourseIdIsNullWhenGettingEnrolledStudents() {
+        //given
+        GetMarksRequest getMarksRequest = new GetMarksRequest(null);
+
+        //when
+        ResponseEntity response = underTest.getEnrolledStudents(getMarksRequest);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Course ID is Missing");
+
+        verify(courseRegistrationRepository, never()).findByCourseId(any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
 
 }
