@@ -58,7 +58,8 @@ class LMSUserServiceTest {
         verify(userRepository).save(userArgumentCaptor.capture());
         User capturedUser = userArgumentCaptor.getValue();
         assertThat(capturedUser).isEqualToComparingFieldByField(user);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
@@ -72,7 +73,8 @@ class LMSUserServiceTest {
 
         //then
         verify(userRepository, never()).save(any());
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
     @Test
