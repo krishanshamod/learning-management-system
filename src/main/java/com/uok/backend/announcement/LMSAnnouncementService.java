@@ -60,12 +60,13 @@ public class LMSAnnouncementService implements AnnouncementService {
                 throw new AnnouncementAddingFailureException("Announcement already exists");
             }
 
-            // email the announcement to the enrolled students
-            emailService.setAnnouncement(announcement);
-            new Thread(emailService).start();
+            // subscribe add announcement observers to the list
+            Subject subject = new Subject();
+            subject.subscribe(new AnnouncementEmailObserver(emailService));
+            subject.subscribe(new AnnouncementSaveObserver(announcementRepository));
 
-            // add announcement to the database
-            announcementRepository.save(announcement);
+            // notify all observers
+            subject.notifyAllObservers(announcement);
 
             return ResponseEntity.ok().build();
 
