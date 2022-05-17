@@ -352,6 +352,79 @@ class LMSMarkServiceTest {
     }
 
     @Test
-    void getEnrolledStudents() {
+    void shouldGetEnrolledStudents() {
+        //given
+        User userLecturer = new User("krishanshamod@gmail.com", "Krishan", "Shamod", "lecturer");
+        User userStudent0 = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+        User userStudent1 = new User("warunajithbandara@gmail.com", "Warunajith", "Bandara", "student");
+        Course course0 = new Course("cf", "Computer Fundamentals");
+        GetMarksRequest getMarksRequest = new GetMarksRequest("cf");
+        CourseRegistration courseRegistrationLecturer = new CourseRegistration(userLecturer, course0);
+        CourseRegistration courseRegistrationStudent0 = new CourseRegistration(userStudent0, course0);
+        CourseRegistration courseRegistrationStudent1 = new CourseRegistration(userStudent1, course0);
+        courseRegistrationStudent0.setMarks(70);
+        courseRegistrationStudent1.setMarks(90);
+        List<CourseRegistration> courseRegistrations = new ArrayList<>();
+        courseRegistrations.add(courseRegistrationLecturer);
+        courseRegistrations.add(courseRegistrationStudent0);
+        courseRegistrations.add(courseRegistrationStudent1);
+
+        //when
+        when(userService.getTokenUser()).thenReturn(userLecturer);
+        when(courseRegistrationRepository.findByCourseId(any())).thenReturn(courseRegistrations);
+        ResponseEntity response = underTest.getEnrolledStudents(getMarksRequest);
+
+        //then
+        ArgumentCaptor<String> courseIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(courseRegistrationRepository).findByCourseId(courseIdCaptor.capture());
+        String courseId = courseIdCaptor.getValue();
+        assertThat(courseId).isEqualTo(getMarksRequest.getCourseId());
+
+        Object body = response.getBody();
+        List<GetEnrolledStudentsResponse> actualResponseBody = (List<GetEnrolledStudentsResponse>) body;
+        assertThat(actualResponseBody.size()).isEqualTo(2);
+        GetEnrolledStudentsResponse result0 =  actualResponseBody.get(0);
+        assertThat(result0.getEmail()).isEqualTo(courseRegistrationStudent0.getUser().getEmail());
+        assertThat(result0.getFirstName()).isEqualTo(courseRegistrationStudent0.getUser().getFirstName());
+        assertThat(result0.getLastName()).isEqualTo(courseRegistrationStudent0.getUser().getLastName());
+        assertThat(result0.getMarks()).isEqualTo(courseRegistrationStudent0.getMarks());
+
+        GetEnrolledStudentsResponse result1 =  actualResponseBody.get(1);
+        assertThat(result1.getEmail()).isEqualTo(courseRegistrationStudent1.getUser().getEmail());
+        assertThat(result1.getFirstName()).isEqualTo(courseRegistrationStudent1.getUser().getFirstName());
+        assertThat(result1.getLastName()).isEqualTo(courseRegistrationStudent1.getUser().getLastName());
+        assertThat(result1.getMarks()).isEqualTo(courseRegistrationStudent1.getMarks());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
+    @Test
+    void shouldReturnNullWhenThereAreNoEnrollmentsWhenGettingEnrolledStudents() {
+        //given
+        User userLecturer = new User("krishanshamod@gmail.com", "Krishan", "Shamod", "lecturer");
+        Course course0 = new Course("cf", "Computer Fundamentals");
+        GetMarksRequest getMarksRequest = new GetMarksRequest("cf");
+        CourseRegistration courseRegistrationLecturer = new CourseRegistration(userLecturer, course0);
+        List<CourseRegistration> courseRegistrations = new ArrayList<>();
+        courseRegistrations.add(courseRegistrationLecturer);
+
+        //when
+        when(userService.getTokenUser()).thenReturn(userLecturer);
+        when(courseRegistrationRepository.findByCourseId(any())).thenReturn(courseRegistrations);
+        ResponseEntity response = underTest.getEnrolledStudents(getMarksRequest);
+
+        //then
+        ArgumentCaptor<String> courseIdCaptor = ArgumentCaptor.forClass(String.class);
+        verify(courseRegistrationRepository).findByCourseId(courseIdCaptor.capture());
+        String courseId = courseIdCaptor.getValue();
+        assertThat(courseId).isEqualTo(getMarksRequest.getCourseId());
+
+        Object body = response.getBody();
+        List<GetEnrolledStudentsResponse> actualResponseBody = (List<GetEnrolledStudentsResponse>) body;
+        assertThat(actualResponseBody.size()).isEqualTo(0);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+
 }
