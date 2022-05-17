@@ -2,15 +2,10 @@ package com.uok.backend.course;
 
 import com.uok.backend.course.registration.CourseRegistration;
 import com.uok.backend.course.registration.CourseRegistrationRepository;
-import com.uok.backend.exceptions.DataMissingException;
-import com.uok.backend.security.TokenValidator;
-import com.uok.backend.user.LMSUserService;
 import com.uok.backend.user.User;
-import com.uok.backend.user.UserRepository;
 import com.uok.backend.user.UserService;
 import com.uok.backend.utils.Logger;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -21,14 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.net.http.HttpResponse;
+
 import java.util.*;
 
+//import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = {LMSCourseService.class})
@@ -210,15 +204,16 @@ class LMSCourseServiceTest {
 
         //given
         User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
-//        Course course = new Course("cf", "Computer Fundamentals");
-//        List<CourseRegistration> courseRegistrations = Arrays.asList(new CourseRegistration(user, course));
-//        courseRegistrations.add(new CourseRegistration(user, course));
-//        GetCourseResponse courseEnrollment = new GetCourseResponse(course.getId(), course.getName());
+        Course course0 = new Course("cf", "Computer Fundamentals");
+        Course course1 = new Course("mob", "Mobile App Development");
 
+        List<CourseRegistration> courseRegistrations = new ArrayList<>();
+        courseRegistrations.add(new CourseRegistration(user, course0));
+        courseRegistrations.add(new CourseRegistration(user, course1));
 
         //when
         when(userService.getTokenUser()).thenReturn(user);
-//        when(courseRegistrationRepository.findAllByUserEmail(user.getEmail())).thenReturn(courseRegistrations);
+        when(courseRegistrationRepository.findAllByUserEmail(user.getEmail())).thenReturn(courseRegistrations);
         ResponseEntity response = underTest.getEnrolledCourses();
 
         //then
@@ -227,13 +222,57 @@ class LMSCourseServiceTest {
         String capturedEmail = emailCaptor.getValue();
         assertThat(capturedEmail).isEqualTo(user.getEmail());
 
-//        assertThat(response.getBody()).asList().containsAnyElementsOf(Arrays.asList(courseEnrollment));
+        Object body = response.getBody();
+        GetCourseResponse result0 = ((List<GetCourseResponse>) body).get(0);
+        GetCourseResponse result1 =  ((List<GetCourseResponse>) body).get(1);
+
+        assertThat(result0.getId()).isEqualTo(course0.getId());
+        assertThat(result0.getName()).isEqualTo(course0.getName());
+        assertThat(result1.getId()).isEqualTo(course1.getId());
+        assertThat(result1.getName()).isEqualTo(course1.getName());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
     }
 
     @Test
-    void getAvailableCourses() {
+    void shouldGetAvailableCourses() {
+
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+        Course course0 = new Course("cf", "Computer Fundamentals");
+        Course course1 = new Course("mob", "Mobile Development");
+
+        List<Course> courseList = new ArrayList<>();
+        courseList.add(course0);
+        courseList.add(course1);
+
+        List<GetCourseResponse> availableCoursesResponse = new ArrayList<>();
+        availableCoursesResponse.add(new GetCourseResponse(course0.getId(), course0.getName()));
+
+
+        //when
+        when(userService.getTokenUser()).thenReturn(user);
+        when(courseRepository.findAll()).thenReturn(courseList);
+        ResponseEntity response = underTest.getAvailableCourses();
+
+        //then
+        verify(courseRepository).findAll();
+
+        ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
+        verify(courseRegistrationRepository).findAllByUserEmail(emailCaptor.capture());
+        String capturedEmail = emailCaptor.getValue();
+        assertThat(capturedEmail).isEqualTo(user.getEmail());
+
+        Object body = response.getBody();
+        GetCourseResponse result0 = ((List<GetCourseResponse>) body).get(0);
+        GetCourseResponse result1 =  ((List<GetCourseResponse>) body).get(1);
+
+        assertThat(result0.getId()).isEqualTo(course0.getId());
+        assertThat(result0.getName()).isEqualTo(course0.getName());
+        assertThat(result1.getId()).isEqualTo(course1.getId());
+        assertThat(result1.getName()).isEqualTo(course1.getName());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
