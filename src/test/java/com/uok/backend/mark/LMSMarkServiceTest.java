@@ -187,7 +187,89 @@ class LMSMarkServiceTest {
     }
 
     @Test
-    void getStudentMarksForACourse() {
+    void shouldGetStudentMarksForACourse() {
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+        Course course = new Course("cf", "Computer Fundamentals");
+        CourseRegistration courseRegistration = new CourseRegistration(user, course);
+        courseRegistration.setMarks(70);
+        GetStudentMarksRequest getStudentMarksRequest = new GetStudentMarksRequest(
+                courseRegistration.getUser().getEmail(),
+                courseRegistration.getCourse().getId()
+        );
+
+        //when
+        when(courseRegistrationRepository.findByCourseIdAndUserEmail(anyString(), anyString())).thenReturn(courseRegistration);
+        ResponseEntity response = underTest.getStudentMarksForACourse(getStudentMarksRequest);
+
+        //then
+        ArgumentCaptor<String> courseIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
+        verify(courseRegistrationRepository).findByCourseIdAndUserEmail(courseIdCaptor.capture(), emailCaptor.capture());
+        String email = emailCaptor.getValue();
+        String courseId = courseIdCaptor.getValue();
+        assertThat(email).isEqualTo(getStudentMarksRequest.getStudentEmail());
+        assertThat(courseId).isEqualTo(getStudentMarksRequest.getCourseId());
+
+        Object body = response.getBody();
+        GetMarksResponse result = ((GetMarksResponse) body);
+        assertThat(result.getStudentEmail()).isEqualTo(courseRegistration.getUser().getEmail());
+        assertThat(result.getCourseId()).isEqualTo(courseRegistration.getCourse().getId());
+        assertThat(result.getMarks()).isEqualTo(courseRegistration.getMarks());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void shouldThrowWhenCourseIdIsNullWhenGettingStudentMarksForACourse() {
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+        Course course = new Course(null, "Computer Fundamentals");
+        CourseRegistration courseRegistration = new CourseRegistration(user, course);
+        courseRegistration.setMarks(70);
+        GetStudentMarksRequest getStudentMarksRequest = new GetStudentMarksRequest(
+                courseRegistration.getUser().getEmail(),
+                courseRegistration.getCourse().getId()
+        );
+
+        //when
+        ResponseEntity response = underTest.getStudentMarksForACourse(getStudentMarksRequest);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Student Email or Course ID is Missing");
+
+        verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldThrowWhenStudentEmailIsNullWhenGettingStudentMarksForACourse() {
+        //given
+        User user = new User(null, "Pasan", "Jayawardene", "student");
+        Course course = new Course("cf", "Computer Fundamentals");
+        CourseRegistration courseRegistration = new CourseRegistration(user, course);
+        courseRegistration.setMarks(70);
+        GetStudentMarksRequest getStudentMarksRequest = new GetStudentMarksRequest(
+                courseRegistration.getUser().getEmail(),
+                courseRegistration.getCourse().getId()
+        );
+
+        //when
+        ResponseEntity response = underTest.getStudentMarksForACourse(getStudentMarksRequest);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Student Email or Course ID is Missing");
+
+        verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
