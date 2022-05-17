@@ -1,4 +1,6 @@
-package com.uok.backend.announcement;
+package com.uok.backend.announcement.observer;
+
+import com.uok.backend.announcement.Announcement;
 
 import java.util.ArrayList;
 import java.util.List;

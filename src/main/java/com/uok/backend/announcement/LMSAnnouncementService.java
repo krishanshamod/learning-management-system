@@ -1,6 +1,9 @@
 package com.uok.backend.announcement;
 
 import com.uok.backend.announcement.email.EmailService;
+import com.uok.backend.announcement.observer.AnnouncementEmailObserver;
+import com.uok.backend.announcement.observer.AnnouncementSaveObserver;
+import com.uok.backend.announcement.observer.Subject;
 import com.uok.backend.course.registration.CourseRegistration;
 import com.uok.backend.course.registration.CourseRegistrationRepository;
 import com.uok.backend.exceptions.AnnouncementAddingFailureException;

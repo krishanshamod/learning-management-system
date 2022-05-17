@@ -1,4 +1,7 @@
-package com.uok.backend.announcement;
+package com.uok.backend.announcement.observer;
+
+import com.uok.backend.announcement.Announcement;
+import com.uok.backend.announcement.AnnouncementRepository;
 
 public class AnnouncementSaveObserver implements Observer {
 

@@ -1,5 +1,6 @@
-package com.uok.backend.announcement;
+package com.uok.backend.announcement.observer;
 
+import com.uok.backend.announcement.Announcement;
 import com.uok.backend.announcement.email.EmailService;
 
 public class AnnouncementEmailObserver implements Observer {
