@@ -22,8 +22,8 @@ import org.springframework.test.context.ContextConfiguration;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
 
 @ContextConfiguration(classes = {LMSMarkService.class})
 @ExtendWith(MockitoExtension.class)
@@ -66,6 +66,66 @@ class LMSMarkServiceTest {
         assertThat(capturedEmail).isEqualTo(addMarksRequest.getStudentEmail());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void shouldThrowWhenStudentEmailIsNull() {
+
+        //given
+        AddMarksRequest addMarksRequest = new AddMarksRequest("cf", 70, null);
+
+        //when
+        ResponseEntity response = underTest.addCourseMarks(addMarksRequest);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Input Data Missing");
+
+        verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldThrowWhenCourseIdIsNull() {
+
+        //given
+        AddMarksRequest addMarksRequest = new AddMarksRequest(null, 70, "pasandevin@gmail.com");
+
+        //when
+        ResponseEntity response = underTest.addCourseMarks(addMarksRequest);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Input Data Missing");
+
+        verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldThrowWhenMarksAreNotSet() {
+
+        //given
+        AddMarksRequest addMarksRequest = new AddMarksRequest("cf", -1, "pasandevin@gmail.com");
+
+        //when
+        ResponseEntity response = underTest.addCourseMarks(addMarksRequest);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Input Data Missing");
+
+        verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
