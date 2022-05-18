@@ -162,4 +162,23 @@ class LMSContentServiceTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
+    @Test
+    void shouldThrowWhenCourseIdIsMissingWhenGettingContentForACourse() {
+        //given
+        GetContentRequest getContentRequest = new GetContentRequest(null);
+
+        //when
+        ResponseEntity response = underTest.getContentForACourse(getContentRequest);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("CourseId is Missing");
+
+        verify(contentRepository, never()).findByCourseId(any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
 }
