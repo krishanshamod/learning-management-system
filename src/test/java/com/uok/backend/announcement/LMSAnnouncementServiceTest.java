@@ -21,8 +21,8 @@ import org.springframework.test.context.ContextConfiguration;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
 
 @ContextConfiguration(classes = {LMSAnnouncementService.class})
 @ExtendWith(MockitoExtension.class)
@@ -95,7 +95,77 @@ class LMSAnnouncementServiceTest {
 
     @Test
     void shouldThrowWhenCourseIdIsMissingWhenAddingAnnouncement() {
+        //given
+        Announcement announcement = new Announcement(
+                null,
+                "New Assignment",
+                "Findout about different Computing generations"
+        );
 
+        //when
+        ResponseEntity response = underTest.addAnnouncement(announcement);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Input Data missing");
+
+        verify(announcementRepository, never()).findByCourseIdAndTitle(any(), any());
+        verify(emailService, never()).setAnnouncement(any());
+        verify(announcementRepository, never()).save(any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldThrowWhenAnnouncementTitleIsMissingWhenAddingAnnouncement() {
+        //given
+        Announcement announcement = new Announcement(
+                "cf",
+                null,
+                "Findout about different Computing generations"
+        );
+
+        //when
+        ResponseEntity response = underTest.addAnnouncement(announcement);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Input Data missing");
+
+        verify(announcementRepository, never()).findByCourseIdAndTitle(any(), any());
+        verify(emailService, never()).setAnnouncement(any());
+        verify(announcementRepository, never()).save(any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldThrowWhenAnnouncementContentIsMissingWhenAddingAnnouncement() {
+        //given
+        Announcement announcement = new Announcement(
+                "cf",
+                "New Assignment",
+                null
+        );
+
+        //when
+        ResponseEntity response = underTest.addAnnouncement(announcement);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Input Data missing");
+
+        verify(announcementRepository, never()).findByCourseIdAndTitle(any(), any());
+        verify(emailService, never()).setAnnouncement(any());
+        verify(announcementRepository, never()).save(any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
