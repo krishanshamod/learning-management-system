@@ -96,6 +96,25 @@ class LMSContentServiceTest {
     }
 
     @Test
+    void shouldThrowWhenContentDescriptionIsMissingWhenAddingContentToACourse() {
+        //given
+        Content content = new Content("cf", "Introduction", null);
+
+        //when
+        ResponseEntity response = underTest.addContentToACourse(content);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Input Data Missing");
+
+        verify(contentRepository, never()).save(any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
     void getContentForACourse() {
     }
 }
