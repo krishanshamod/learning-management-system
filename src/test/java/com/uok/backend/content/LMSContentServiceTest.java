@@ -143,9 +143,23 @@ class LMSContentServiceTest {
         verify(contentRepository, never()).save(any());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+
     }
 
     @Test
-    void getContentForACourse() {
+    void shouldGetContentForACourse() {
+        //given
+        GetContentRequest getContentRequest = new GetContentRequest("cf");
+
+        //when
+        ResponseEntity response = underTest.getContentForACourse(getContentRequest);
+
+        //then
+        ArgumentCaptor<String> courseIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(contentRepository).findByCourseId(courseIdArgumentCaptor.capture());
+        String capturedCourseId = courseIdArgumentCaptor.getValue();
+        assertThat(capturedCourseId).isEqualTo(getContentRequest.getCourseId());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
