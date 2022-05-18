@@ -49,6 +49,14 @@ class LMSContentServiceTest {
         ResponseEntity response = underTest.addContentToACourse(content);
 
         //then
+        ArgumentCaptor<String> courseIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> contentTitleArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(contentRepository).findByCourseIdAndTitle(courseIdArgumentCaptor.capture(), contentTitleArgumentCaptor.capture());
+        String capturedCourseId = courseIdArgumentCaptor.getValue();
+        String capturedContentTitle = contentTitleArgumentCaptor.getValue();
+        assertThat(capturedCourseId).isEqualTo(content.getCourseId());
+        assertThat(capturedContentTitle).isEqualTo(content.getTitle());
+
         ArgumentCaptor<Content> contentArgumentCaptor = ArgumentCaptor.forClass(Content.class);
         verify(contentRepository).save(contentArgumentCaptor.capture());
         Content capturedContent = contentArgumentCaptor.getValue();
@@ -71,6 +79,7 @@ class LMSContentServiceTest {
         String capturedErrorMessage = errorMessageCaptor.getValue();
         assertThat(capturedErrorMessage).isEqualTo("Input Data Missing");
 
+        verify(contentRepository, never()).findByCourseIdAndTitle(any(), any());
         verify(contentRepository, never()).save(any());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -90,6 +99,7 @@ class LMSContentServiceTest {
         String capturedErrorMessage = errorMessageCaptor.getValue();
         assertThat(capturedErrorMessage).isEqualTo("Input Data Missing");
 
+        verify(contentRepository, never()).findByCourseIdAndTitle(any(), any());
         verify(contentRepository, never()).save(any());
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -108,6 +118,27 @@ class LMSContentServiceTest {
         verify(logger).logException(errorMessageCaptor.capture());
         String capturedErrorMessage = errorMessageCaptor.getValue();
         assertThat(capturedErrorMessage).isEqualTo("Input Data Missing");
+
+        verify(contentRepository, never()).findByCourseIdAndTitle(any(), any());
+        verify(contentRepository, never()).save(any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldThrowWhenContentAlreadyExistsWhenAddingContentToACourse() {
+        //given
+        Content content = new Content("cf", "Introduction", "In Computer Fundamentals we will focus on basic computing technologies");
+
+        //when
+        when(contentRepository.findByCourseIdAndTitle(any(), any())).thenReturn(content);
+        ResponseEntity response = underTest.addContentToACourse(content);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Content Already Exists");
 
         verify(contentRepository, never()).save(any());
 
