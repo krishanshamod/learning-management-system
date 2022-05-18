@@ -169,6 +169,46 @@ class LMSAnnouncementServiceTest {
     }
 
     @Test
+    void shouldThrowWhenAnnouncementAlreadyExistsWhenAddingAnnouncement() {
+        //given
+        Announcement announcement = new Announcement(
+                "cf",
+                "New Assignment",
+                "Findout about different Computing generations"
+        );
+
+
+        //when
+        when(announcementRepository.findByCourseIdAndTitle(any(), any())).thenReturn(announcement);
+        ResponseEntity response = underTest.addAnnouncement(announcement);
+
+
+        //then
+        ArgumentCaptor<String> courseIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> announcementTitleArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(announcementRepository).findByCourseIdAndTitle(
+                courseIdArgumentCaptor.capture(),
+                announcementTitleArgumentCaptor.capture()
+        );
+        String capturedCourseId = courseIdArgumentCaptor.getValue();
+        String capturedAnnouncementTitle = announcementTitleArgumentCaptor.getValue();
+        assertThat(capturedCourseId).isEqualTo(announcement.getCourseId());
+        assertThat(capturedAnnouncementTitle).isEqualTo(announcement.getTitle());
+
+
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Announcement already exists");
+
+
+        verify(emailService, never()).setAnnouncement(any());
+        verify(announcementRepository, never()).save(any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
     void getAnnouncementsForACourse() {
     }
 
