@@ -20,8 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ContextConfiguration(classes = {LMSContentService.class})
 @ExtendWith(MockitoExtension.class)
@@ -55,6 +55,25 @@ class LMSContentServiceTest {
         assertThat(capturedContent).isEqualTo(content);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void shouldThrowWhenCourseIdIsMissingWhenAddingContentToACourse() {
+        //given
+        Content content = new Content(null, "Introduction", "In Computer Fundamentals we will focus on basic computing technologies");
+
+        //when
+        ResponseEntity response = underTest.addContentToACourse(content);
+
+        //then
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Input Data Missing");
+
+        verify(contentRepository, never()).save(any());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
