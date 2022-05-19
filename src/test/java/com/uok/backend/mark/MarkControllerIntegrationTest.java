@@ -71,6 +71,34 @@ class MarkControllerIntegrationTest {
         assertEquals(200, response.getStatusCodeValue());
     }
 
+    @Test
+    void getStudentMarksForCourse_allDetailsGiven_shouldReturnHttp200() {
+
+        headers.add(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6InRlc3RsZWN0dXJlckB0ZXN0LmNvbSI" +
+                        "sImZpcnN0TmFtZSI6ImZpcnN0TmFtZSIsImxhc3ROYW1lIjoibGFzdE5hbWUiLCJyb2xlIjoi" +
+                        "bGVjdHVyZXIifQ.Kfl5jfcuJ_P8KARsRpYWyRNaV_gRC7dVlUjgXgOlqRds81SF2Di6u5bsTHr" +
+                        "9nrLsv9lN4xlnwcN6b3zvmU0s4Q"
+        );
+
+        GetStudentMarksRequest getStudentMarksRequest = new GetStudentMarksRequest(
+                "teststudent@test.com",
+                "testcourseid"
+        );
+
+        HttpEntity<GetStudentMarksRequest> entity = new HttpEntity<GetStudentMarksRequest>(
+                getStudentMarksRequest,
+                headers
+        );
+
+        ResponseEntity response = restTemplate.exchange(
+                createURLWithPort("/mark/getstudentmarks"),
+                HttpMethod.POST, entity, String.class);
+
+        assertEquals(200, response.getStatusCodeValue());
+    }
+
     private String createURLWithPort(String uri) {
         return "http://localhost:" + port + uri;
     }
