@@ -31,6 +31,7 @@ CREATE TABLE `course` (
 );
 
 INSERT INTO `course` VALUES ('testcourseid','testCourseName');
+INSERT INTO `course` VALUES ('testcourseid1','testCourseName1');
 
 DROP TABLE IF EXISTS `course_registration`;
 
