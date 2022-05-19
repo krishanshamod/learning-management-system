@@ -4,8 +4,11 @@ import com.uok.backend.announcement.email.EmailService;
 import com.uok.backend.content.Content;
 import com.uok.backend.content.ContentRepository;
 import com.uok.backend.content.LMSContentService;
+import com.uok.backend.course.Course;
 import com.uok.backend.course.GetCourseResponse;
+import com.uok.backend.course.registration.CourseRegistration;
 import com.uok.backend.course.registration.CourseRegistrationRepository;
+import com.uok.backend.user.User;
 import com.uok.backend.user.UserService;
 import com.uok.backend.utils.Logger;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -367,6 +371,78 @@ class LMSAnnouncementServiceTest {
     }
 
     @Test
-    void getNotificationsForAUser() {
+    void shouldGetNotificationsForAUser() {
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+        Course course0 = new Course("cf", "Computer Fundamentals");
+
+        List<CourseRegistration> courseRegistrations = new ArrayList<>();
+        courseRegistrations.add(new CourseRegistration(user, course0));
+
+        Announcement announcement0 = new Announcement("cf", "First Assignment", "Findout about different Computing generations");
+        Announcement announcement1 = new Announcement("cf", "Second Assignment", "Findout about different mobile computing technologies");
+        List<Announcement> announcementList = new ArrayList<>();
+        announcementList.add(announcement0);
+        announcementList.add(announcement1);
+
+
+        //when
+        when(userService.getTokenUser()).thenReturn(user);
+        when(courseRegistrationRepository.findAllByUserEmail(any())).thenReturn(courseRegistrations);
+        when(announcementRepository.findByCourseId(any())).thenReturn(announcementList);
+        ResponseEntity response = underTest.getNotificationsForAUser();
+
+
+        //then
+        ArgumentCaptor<String> emailArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(courseRegistrationRepository).findAllByUserEmail(emailArgumentCaptor.capture());
+        String capturedEmail = emailArgumentCaptor.getValue();
+        assertThat(capturedEmail).isEqualTo(user.getEmail());
+
+        ArgumentCaptor<String> courseIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(announcementRepository, times(1)).findByCourseId(courseIdArgumentCaptor.capture());
+        String capturedCourseId = courseIdArgumentCaptor.getValue();
+        assertThat(capturedCourseId).isEqualTo(courseRegistrations.get(0).getCourse().getId());
+        //Todo check the argument
+
+        Object body = response.getBody();
+        GetNotificationsResponse result0 = ((List<GetNotificationsResponse>) body).get(0);
+        GetNotificationsResponse result1 =  ((List<GetNotificationsResponse>) body).get(1);
+
+        assertThat(result0.getCourseId()).isEqualTo(courseRegistrations.get(0).getCourse().getId());
+        assertThat(result0.getCourseName()).isEqualTo(courseRegistrations.get(0).getCourse().getName());
+        assertThat(result0.getTitle()).isEqualTo(announcementList.get(0).getTitle());
+        assertThat(result1.getCourseId()).isEqualTo(courseRegistrations.get(0).getCourse().getId());
+        assertThat(result1.getCourseName()).isEqualTo(courseRegistrations.get(0).getCourse().getName());
+        assertThat(result1.getTitle()).isEqualTo(announcementList.get(1).getTitle());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void shouldReturnNUllWhenThereAreNoEnrollmentsWhenGettingNotificationsForAUser() {
+        //given
+        User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
+        List<CourseRegistration> courseRegistrations = new ArrayList<>();
+
+        //when
+        when(userService.getTokenUser()).thenReturn(user);
+        when(courseRegistrationRepository.findAllByUserEmail(any())).thenReturn(courseRegistrations);
+        ResponseEntity response = underTest.getNotificationsForAUser();
+
+
+        //then
+        ArgumentCaptor<String> emailArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(courseRegistrationRepository).findAllByUserEmail(emailArgumentCaptor.capture());
+        String capturedEmail = emailArgumentCaptor.getValue();
+        assertThat(capturedEmail).isEqualTo(user.getEmail());
+
+        verify(announcementRepository, never()).findByCourseId(any());
+
+        Object body = response.getBody();
+        List<GetNotificationsResponse> result = ((List<GetNotificationsResponse>) body);
+        assertThat(result.size()).isEqualTo(0);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
