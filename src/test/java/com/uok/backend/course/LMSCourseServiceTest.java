@@ -63,7 +63,10 @@ class LMSCourseServiceTest {
 
         ArgumentCaptor<String> emailArgumentCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> courseIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(courseRegistrationRepository).addUserToCourse(emailArgumentCaptor.capture(), courseIdArgumentCaptor.capture());
+        verify(courseRegistrationRepository).addUserToCourse(
+                emailArgumentCaptor.capture(),
+                courseIdArgumentCaptor.capture()
+        );
         String capturedEmail = emailArgumentCaptor.getValue();
         String capturedCourseId = courseIdArgumentCaptor.getValue();
         assertThat(capturedEmail).isEqualTo(user.getEmail());

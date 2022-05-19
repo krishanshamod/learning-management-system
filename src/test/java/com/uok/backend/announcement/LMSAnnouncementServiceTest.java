@@ -209,7 +209,40 @@ class LMSAnnouncementServiceTest {
     }
 
     @Test
-    void getAnnouncementsForACourse() {
+    void shouldGetAnnouncementsForACourse() {
+        //given
+        GetAnnouncementRequest getAnnouncementRequest = new GetAnnouncementRequest("cf");
+
+        //when
+        ResponseEntity response = underTest.getAnnouncementsForACourse(getAnnouncementRequest);
+
+        //then
+        ArgumentCaptor<String> courseIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(announcementRepository).findByCourseId(courseIdArgumentCaptor.capture());
+        String capturedCourseId = courseIdArgumentCaptor.getValue();
+        assertThat(capturedCourseId).isEqualTo(getAnnouncementRequest.getCourseId());
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+    }
+
+    @Test
+    void shouldThrowWhenCourseIdIsMissingWhenGettingAnnouncementsForACourse() {
+        //given
+        GetAnnouncementRequest getAnnouncementRequest = new GetAnnouncementRequest(null);
+
+        //when
+        ResponseEntity response = underTest.getAnnouncementsForACourse(getAnnouncementRequest);
+
+        //then
+        verify(announcementRepository, never()).findByCourseId(any());
+
+        ArgumentCaptor<String> errorMessageCaptor = ArgumentCaptor.forClass(String.class);
+        verify(logger).logException(errorMessageCaptor.capture());
+        String capturedErrorMessage = errorMessageCaptor.getValue();
+        assertThat(capturedErrorMessage).isEqualTo("Course Id is missing");
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
