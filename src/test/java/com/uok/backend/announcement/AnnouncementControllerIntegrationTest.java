@@ -1,7 +1,6 @@
 package com.uok.backend.announcement;
 
 import com.uok.backend.BackendApplication;
-import com.uok.backend.content.Content;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +91,50 @@ class AnnouncementControllerIntegrationTest {
                 HttpMethod.POST, entity, String.class);
 
         assertEquals(200, response.getStatusCodeValue());
+    }
+
+    @Test
+    void getNotification_existingAnnouncementDetailsGiven_shouldReturnHttp200() {
+
+        headers.add(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6InRlc3RzdHVkZW50QHRlc3QuY29t" +
+                        "IiwiZmlyc3ROYW1lIjoiZmlyc3ROYW1lIiwibGFzdE5hbWUiOiJsYXN0TmFtZSIsInJvbGU" +
+                        "iOiJzdHVkZW50In0.cvVfmD0me4ob6ekr_x-HnWaI786bQNkyTlLgYxtiFQwEPTpuWB9dS5" +
+                        "JfRguZIT0fjW1SETVQRuJ4WkE9w-wlzg"
+        );
+
+        GetNotificationRequest request = new GetNotificationRequest("testcourseid", "testAnnouncementTitle");
+
+        HttpEntity<GetNotificationRequest> entity = new HttpEntity<GetNotificationRequest>(request, headers);
+
+        ResponseEntity response = restTemplate.exchange(
+                createURLWithPort("/announcement/getnotification"),
+                HttpMethod.POST, entity, String.class);
+
+        assertEquals(200, response.getStatusCodeValue());
+    }
+
+    @Test
+    void getNotification_notExistingAnnouncementDetailsGiven_shouldReturnHttp400() {
+
+        headers.add(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6InRlc3RzdHVkZW50QHRlc3QuY29t" +
+                        "IiwiZmlyc3ROYW1lIjoiZmlyc3ROYW1lIiwibGFzdE5hbWUiOiJsYXN0TmFtZSIsInJvbGU" +
+                        "iOiJzdHVkZW50In0.cvVfmD0me4ob6ekr_x-HnWaI786bQNkyTlLgYxtiFQwEPTpuWB9dS5" +
+                        "JfRguZIT0fjW1SETVQRuJ4WkE9w-wlzg"
+        );
+
+        GetNotificationRequest request = new GetNotificationRequest("testcourseid", "testAnnouncementTitle2");
+
+        HttpEntity<GetNotificationRequest> entity = new HttpEntity<GetNotificationRequest>(request, headers);
+
+        ResponseEntity response = restTemplate.exchange(
+                createURLWithPort("/announcement/getnotification"),
+                HttpMethod.POST, entity, String.class);
+
+        assertEquals(400, response.getStatusCodeValue());
     }
 
     private String createURLWithPort(String uri) {
