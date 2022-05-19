@@ -53,7 +53,11 @@ class LMSMarkServiceTest {
         //given
         User user = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
         Course course = new Course("cf", "Computer Fundamentals");
-        AddMarksRequest addMarksRequest = new AddMarksRequest("cf", 70, "pasandevin@gmail.com");
+        AddMarksRequest addMarksRequest = new AddMarksRequest(
+                "cf",
+                70,
+                "pasandevin@gmail.com"
+        );
         CourseRegistration courseRegistration = new CourseRegistration(user, course);
 
         //when
@@ -63,7 +67,10 @@ class LMSMarkServiceTest {
         //then
         ArgumentCaptor<String> courseIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> emailArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(courseRegistrationRepository).findByCourseIdAndUserEmail(courseIdArgumentCaptor.capture(), emailArgumentCaptor.capture());
+        verify(courseRegistrationRepository).findByCourseIdAndUserEmail(
+                courseIdArgumentCaptor.capture(),
+                emailArgumentCaptor.capture()
+        );
         String capturedCourseId = courseIdArgumentCaptor.getValue();
         String capturedEmail = emailArgumentCaptor.getValue();
         assertThat(capturedCourseId).isEqualTo(addMarksRequest.getCourseId());
@@ -96,7 +103,11 @@ class LMSMarkServiceTest {
     void shouldThrowWhenCourseIdIsNullWhenAddingMarksToACourse() {
 
         //given
-        AddMarksRequest addMarksRequest = new AddMarksRequest(null, 70, "pasandevin@gmail.com");
+        AddMarksRequest addMarksRequest = new AddMarksRequest(
+                null,
+                70,
+                "pasandevin@gmail.com"
+        );
 
         //when
         ResponseEntity response = underTest.addCourseMarks(addMarksRequest);
@@ -116,7 +127,11 @@ class LMSMarkServiceTest {
     void shouldThrowWhenMarksAreNotSetWhenAddingMarksToACourse() {
 
         //given
-        AddMarksRequest addMarksRequest = new AddMarksRequest("cf", -1, "pasandevin@gmail.com");
+        AddMarksRequest addMarksRequest = new AddMarksRequest(
+                "cf",
+                -1,
+                "pasandevin@gmail.com"
+        );
 
         //when
         ResponseEntity response = underTest.addCourseMarks(addMarksRequest);
@@ -143,13 +158,17 @@ class LMSMarkServiceTest {
 
         //when
         when(userService.getTokenUser()).thenReturn(user);
-        when(courseRegistrationRepository.findByCourseIdAndUserEmail(anyString(), anyString())).thenReturn(courseRegistration);
+        when(courseRegistrationRepository.findByCourseIdAndUserEmail(anyString(), anyString()))
+                .thenReturn(courseRegistration);
         ResponseEntity response = underTest.getMarksForACourse(getMarksRequest);
 
         //then
         ArgumentCaptor<String> courseIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
-        verify(courseRegistrationRepository).findByCourseIdAndUserEmail(courseIdCaptor.capture(), emailCaptor.capture());
+        verify(courseRegistrationRepository).findByCourseIdAndUserEmail(
+                courseIdCaptor.capture(),
+                emailCaptor.capture()
+        );
         String email = emailCaptor.getValue();
         String courseId = courseIdCaptor.getValue();
         assertThat(email).isEqualTo(user.getEmail());
@@ -184,6 +203,7 @@ class LMSMarkServiceTest {
 
         verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
 
+        assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -200,13 +220,17 @@ class LMSMarkServiceTest {
         );
 
         //when
-        when(courseRegistrationRepository.findByCourseIdAndUserEmail(anyString(), anyString())).thenReturn(courseRegistration);
+        when(courseRegistrationRepository.findByCourseIdAndUserEmail(anyString(), anyString()))
+                .thenReturn(courseRegistration);
         ResponseEntity response = underTest.getStudentMarksForACourse(getStudentMarksRequest);
 
         //then
         ArgumentCaptor<String> courseIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
-        verify(courseRegistrationRepository).findByCourseIdAndUserEmail(courseIdCaptor.capture(), emailCaptor.capture());
+        verify(courseRegistrationRepository).findByCourseIdAndUserEmail(
+                courseIdCaptor.capture(),
+                emailCaptor.capture()
+        );
         String email = emailCaptor.getValue();
         String courseId = courseIdCaptor.getValue();
         assertThat(email).isEqualTo(getStudentMarksRequest.getStudentEmail());
@@ -244,6 +268,7 @@ class LMSMarkServiceTest {
 
         verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
 
+        assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -270,6 +295,7 @@ class LMSMarkServiceTest {
 
         verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
 
+        assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -354,9 +380,23 @@ class LMSMarkServiceTest {
     @Test
     void shouldGetEnrolledStudents() {
         //given
-        User userLecturer = new User("krishanshamod@gmail.com", "Krishan", "Shamod", "lecturer");
-        User userStudent0 = new User("pasandevin@gmail.com", "Pasan", "Jayawardene", "student");
-        User userStudent1 = new User("warunajithbandara@gmail.com", "Warunajith", "Bandara", "student");
+        User userLecturer = new User(
+                "krishanshamod@gmail.com",
+                "Krishan",
+                "Shamod",
+                "lecturer"
+        );
+        User userStudent0 = new User(
+                "pasandevin@gmail.com",
+                "Pasan",
+                "Jayawardene",
+                "student"
+        );
+        User userStudent1 = new User(
+                "warunajithbandara@gmail.com",
+                "Warunajith",
+                "Bandara", "student"
+        );
         Course course0 = new Course("cf", "Computer Fundamentals");
         GetMarksRequest getMarksRequest = new GetMarksRequest("cf");
         CourseRegistration courseRegistrationLecturer = new CourseRegistration(userLecturer, course0);
@@ -401,7 +441,12 @@ class LMSMarkServiceTest {
     @Test
     void shouldReturnNullWhenThereAreNoEnrollmentsWhenGettingEnrolledStudents() {
         //given
-        User userLecturer = new User("krishanshamod@gmail.com", "Krishan", "Shamod", "lecturer");
+        User userLecturer = new User(
+                "krishanshamod@gmail.com",
+                "Krishan",
+                "Shamod",
+                "lecturer"
+        );
         Course course0 = new Course("cf", "Computer Fundamentals");
         GetMarksRequest getMarksRequest = new GetMarksRequest("cf");
         CourseRegistration courseRegistrationLecturer = new CourseRegistration(userLecturer, course0);
@@ -442,6 +487,7 @@ class LMSMarkServiceTest {
 
         verify(courseRegistrationRepository, never()).findByCourseId(any());
 
+        assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 

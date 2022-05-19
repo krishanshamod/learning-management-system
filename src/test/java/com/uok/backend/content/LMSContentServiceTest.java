@@ -43,7 +43,10 @@ class LMSContentServiceTest {
     @Test
     void shouldAddContentToACourse() {
         //given
-        Content content = new Content("cf", "Introduction", "In Computer Fundamentals we will focus on basic computing technologies");
+        Content content = new Content(
+                "cf", "Introduction",
+                "In Computer Fundamentals we will focus on basic computing technologies"
+        );
 
         //when
         ResponseEntity response = underTest.addContentToACourse(content);
@@ -51,7 +54,10 @@ class LMSContentServiceTest {
         //then
         ArgumentCaptor<String> courseIdArgumentCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> contentTitleArgumentCaptor = ArgumentCaptor.forClass(String.class);
-        verify(contentRepository).findByCourseIdAndTitle(courseIdArgumentCaptor.capture(), contentTitleArgumentCaptor.capture());
+        verify(contentRepository).findByCourseIdAndTitle(
+                courseIdArgumentCaptor.capture(),
+                contentTitleArgumentCaptor.capture()
+        );
         String capturedCourseId = courseIdArgumentCaptor.getValue();
         String capturedContentTitle = contentTitleArgumentCaptor.getValue();
         assertThat(capturedCourseId).isEqualTo(content.getCourseId());
@@ -68,7 +74,11 @@ class LMSContentServiceTest {
     @Test
     void shouldThrowWhenCourseIdIsMissingWhenAddingContentToACourse() {
         //given
-        Content content = new Content(null, "Introduction", "In Computer Fundamentals we will focus on basic computing technologies");
+        Content content = new Content(
+                null,
+                "Introduction",
+                "In Computer Fundamentals we will focus on basic computing technologies"
+        );
 
         //when
         ResponseEntity response = underTest.addContentToACourse(content);
@@ -88,7 +98,11 @@ class LMSContentServiceTest {
     @Test
     void shouldThrowWhenContentTitleIsMissingWhenAddingContentToACourse() {
         //given
-        Content content = new Content("cf", null, "In Computer Fundamentals we will focus on basic computing technologies");
+        Content content = new Content(
+                "cf",
+                null,
+                "In Computer Fundamentals we will focus on basic computing technologies"
+        );
 
         //when
         ResponseEntity response = underTest.addContentToACourse(content);
@@ -128,7 +142,11 @@ class LMSContentServiceTest {
     @Test
     void shouldThrowWhenContentAlreadyExistsWhenAddingContentToACourse() {
         //given
-        Content content = new Content("cf", "Introduction", "In Computer Fundamentals we will focus on basic computing technologies");
+        Content content = new Content(
+                "cf",
+                "Introduction",
+                "In Computer Fundamentals we will focus on basic computing technologies"
+        );
 
         //when
         when(contentRepository.findByCourseIdAndTitle(any(), any())).thenReturn(content);
@@ -179,6 +197,7 @@ class LMSContentServiceTest {
 
         verify(contentRepository, never()).findByCourseId(any());
 
+        assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
