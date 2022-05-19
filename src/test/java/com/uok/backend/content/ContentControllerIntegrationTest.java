@@ -1,7 +1,6 @@
 package com.uok.backend.content;
 
 import com.uok.backend.BackendApplication;
-import com.uok.backend.course.Course;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +69,28 @@ class ContentControllerIntegrationTest {
                 HttpMethod.POST, entity, String.class);
 
         assertEquals(400, response.getStatusCodeValue());
+    }
+
+    @Test
+    void getContentForACourse_courseIdGiven_shouldReturnHttp200() {
+
+        headers.add(
+                HttpHeaders.AUTHORIZATION,
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJlbWFpbCI6InRlc3RsZWN0dXJlckB0ZXN0LmNvbSI" +
+                        "sImZpcnN0TmFtZSI6ImZpcnN0TmFtZSIsImxhc3ROYW1lIjoibGFzdE5hbWUiLCJyb2xlIjoi" +
+                        "bGVjdHVyZXIifQ.Kfl5jfcuJ_P8KARsRpYWyRNaV_gRC7dVlUjgXgOlqRds81SF2Di6u5bsTHr" +
+                        "9nrLsv9lN4xlnwcN6b3zvmU0s4Q"
+        );
+
+        GetContentRequest getContentRequest = new GetContentRequest("testcourseid");
+
+        HttpEntity<GetContentRequest> entity = new HttpEntity<GetContentRequest>(getContentRequest, headers);
+
+        ResponseEntity response = restTemplate.exchange(
+                createURLWithPort("/content/getcontent"),
+                HttpMethod.POST, entity, String.class);
+
+        assertEquals(200, response.getStatusCodeValue());
     }
 
     private String createURLWithPort(String uri) {
