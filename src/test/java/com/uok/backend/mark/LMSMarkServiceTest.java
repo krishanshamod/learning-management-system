@@ -203,6 +203,7 @@ class LMSMarkServiceTest {
 
         verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
 
+        assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -267,6 +268,7 @@ class LMSMarkServiceTest {
 
         verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
 
+        assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -293,6 +295,7 @@ class LMSMarkServiceTest {
 
         verify(courseRegistrationRepository, never()).findByCourseIdAndUserEmail(any(), any());
 
+        assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -484,6 +487,7 @@ class LMSMarkServiceTest {
 
         verify(courseRegistrationRepository, never()).findByCourseId(any());
 
+        assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 

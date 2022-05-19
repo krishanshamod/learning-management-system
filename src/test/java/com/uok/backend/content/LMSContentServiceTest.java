@@ -197,6 +197,7 @@ class LMSContentServiceTest {
 
         verify(contentRepository, never()).findByCourseId(any());
 
+        assertThat(response.getBody()).isNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
