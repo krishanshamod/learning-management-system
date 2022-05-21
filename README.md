@@ -44,16 +44,16 @@ docker pull krishanshamod/learning-management-system
 services:
     lms:
         image: "krishanshamod/learning-management-system"
-    ports:
-        - 8080:8080
-    environment:
-        - lms_db_url= [database url]
-        - lms_db_username= [database username]
-        - lms_db_password= [your database password]
-        - token_secret= [jwt token secret]
-        - mailgun_domain= [mailgun domain]
-        - mailgun_api_key= [mailgun api key]
-        - email_sending_domain= [email sending domain]
+        ports:
+            - 8080:8080
+        environment:
+            - lms_db_url= [database url]
+            - lms_db_username= [database username]
+            - lms_db_password= [your database password]
+            - token_secret= [jwt token secret]
+            - mailgun_domain= [mailgun domain]
+            - mailgun_api_key= [mailgun api key]
+            - email_sending_domain= [email sending domain]
 ```
 Note: You need you replace the environment variables with your own values.
 
