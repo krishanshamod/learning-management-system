@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: learning-management-system
+  namespace: default
+spec:
+  selector:
+    app: lms
+  ports:
+    - name: http
+      targetPort: 8080
+      port: 80

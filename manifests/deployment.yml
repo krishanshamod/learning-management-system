@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learning-management-system
+  namespace: default
+  labels:
+    app: lms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lms
+  template:
+    metadata:
+      name: learning-management-system
+      labels:
+        app: lms
+    spec:
+      containers:
+      - name: learning-management-system
+        image: ks2000acr.azurecr.io/ums
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: lms-config
