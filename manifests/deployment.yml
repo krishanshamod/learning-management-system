@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: learning-management-system
-        image: ks2000acr.azurecr.io/ums
+        image: ks2000acr.azurecr.io/lms
         resources:
           limits:
             memory: "512Mi"
